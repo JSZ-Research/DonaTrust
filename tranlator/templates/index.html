@@ -2,52 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Sign Language Translator</title>
+    <title>AI Sign Language Interpreter</title>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; background: #121212; color: #e0e0e0; margin: 0; }
-        .container { display: flex; width: 100vw; height: 100vh; }
-        
-        .video-box { position: relative; flex: 3; background: #000; overflow: hidden; }
+        :root { --bg: #0f172a; --accent: #3b82f6; --success: #10b981; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        .app-container { display: flex; width: 100%; padding: 20px; gap: 20px; }
+        .video-section { flex: 2; position: relative; background: #000; border-radius: 20px; overflow: hidden; border: 1px solid #334155; }
         #webcam { width: 100%; height: 100%; object-fit: cover; transform: rotateY(180deg); }
-        #output_canvas { position: absolute; top:0; left:0; width: 100%; height: 100%; transform: rotateY(180deg); }
-        
-        .sidebar { flex: 1; padding: 30px; border-left: 1px solid #333; display: flex; flex-direction: column; gap: 20px; background: #1e1e1e; }
-        .result-card { background: #2d2d2d; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        #status-text { font-size: 48px; font-weight: bold; color: #4CAF50; margin: 10px 0; }
-        #dist-info { color: #888; font-family: monospace; }
-        
-        .controls { display: flex; flex-direction: column; gap: 10px; }
-        button { padding: 15px; border-radius: 8px; border: none; background: #007bff; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #0056b3; }
-        button.secondary { background: #444; }
-        .hint { font-size: 12px; color: #666; margin-top: 10px; }
+        #output_canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotateY(180deg); }
+        .sidebar { flex: 0.8; display: flex; flex-direction: column; gap: 20px; min-width: 300px; }
+        .card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-radius: 20px; padding: 24px; border: 1px solid #334155; }
+        .result-card { text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        #status-text { font-size: 48px; font-weight: 800; margin: 20px 0; transition: color 0.3s; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        button { padding: 14px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; background: var(--accent); color: white; transition: 0.2s; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .dist-label { font-family: monospace; color: #94a3b8; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="video-box">
-            <video id="webcam"></video>
-            <canvas id="output_canvas"></canvas>
+
+<div class="app-container">
+    <div class="video-section">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="output_canvas"></canvas>
+    </div>
+
+    <div class="sidebar">
+        <div class="card result-card">
+            <h3 style="color: #94a3b8; text-transform: uppercase; font-size: 14px;">Live Translation</h3>
+            <div id="status-text">Standby</div>
+            <div id="dist-info" class="dist-label">Dist: --</div>
         </div>
-        <div class="sidebar">
-            <div class="result-card">
-                <h3>Translation</h3>
-                <div id="status-text">Ready</div>
-                <div id="dist-info">Distance: -</div>
-            </div>
-            
-            <div class="controls">
-                <h4>Training Panel</h4>
+
+        <div class="card">
+            <h4>Training Actions</h4>
+            <div class="btn-group">
                 <button onclick="record('Hello')">Record "Hello"</button>
-                <button onclick="record('Thank you')">Record "Thank you"</button>
-                <p class="hint">Perform the gesture, then click the button to save.</p>
+                <button onclick="record('Thank You')">Record "Thank You"</button>
+                <button style="background: #475569;" onclick="record('Goodbye')">Record "Goodbye"</button>
             </div>
+            <p style="font-size: 12px; color: #64748b; margin-top: 15px;">Hold your hand steady and click to save the gesture.</p>
         </div>
     </div>
+</div>
 
 <script>
     const socket = io();
@@ -56,34 +58,54 @@
     const canvasCtx = canvasElement.getContext('2d');
     let lastFeatures = null;
 
-    // Feature normalization logic
+    // --- Critical: Unified Normalization Logic ---
     function normalize(landmarks) {
-        let xs = landmarks.map(l => l.x);
-        let ys = landmarks.map(l => l.y);
-        let centerX = xs.reduce((a,b)=>a+b)/21;
-        let centerY = ys.reduce((a,b)=>a+b)/21;
+        // 1. Get raw coordinates
+        const points = landmarks.map(l => ({x: l.x, y: l.y}));
         
-        let points = landmarks.map(l => [l.x - centerX, l.y - centerY]);
-        let maxDist = Math.max(...points.map(p => Math.sqrt(p[0]**2 + p[1]**2)));
+        // 2. Calculate Center (Mean)
+        const centerX = points.reduce((s, p) => s + p.x, 0) / 21;
+        const centerY = points.reduce((s, p) => s + p.y, 0) / 21;
         
-        return points.map(p => [p[0]/maxDist, p[1]/maxDist]).flat();
+        // 3. Center and find Max Distance for scaling
+        let maxDist = 0;
+        const centered = points.map(p => {
+            const dx = p.x - centerX;
+            const dy = p.y - centerY;
+            const d = Math.sqrt(dx*dx + dy*dy);
+            if (d > maxDist) maxDist = d;
+            return {dx, dy};
+        });
+        
+        // 4. Flatten to [x0, y0, x1, y1...] scaled by maxDist
+        const features = [];
+        centered.forEach(p => {
+            features.push(p.dx / (maxDist || 1));
+            features.push(p.dy / (maxDist || 1));
+        });
+        return features;
     }
 
     function onResults(results) {
+        // Dynamic canvas sizing
+        if (canvasElement.width !== videoElement.videoWidth) {
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+        }
+
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         
         if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
             const lms = results.multiHandLandmarks[0];
-            // Draw visual skeleton
-            drawConnectors(canvasCtx, lms, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 4});
-            drawLandmarks(canvasCtx, lms, {color: '#FF0000', lineWidth: 1, radius: 2});
+            drawConnectors(canvasCtx, lms, HAND_CONNECTIONS, {color: '#3b82f6', lineWidth: 4});
+            drawLandmarks(canvasCtx, lms, {color: '#ffffff', lineWidth: 1, radius: 2});
             
             lastFeatures = normalize(lms);
-            // Send normalized coordinates to Flask
             socket.emit('process_frame', {features: lastFeatures});
         } else {
             document.getElementById('status-text').innerText = "No Hand";
+            document.getElementById('status-text').style.color = "#64748b";
         }
         canvasCtx.restore();
     }
@@ -98,23 +120,22 @@
     });
     camera.start();
 
-    // Listen for translation results from backend
+    // Listen for Backend Matching
     socket.on('response_result', (data) => {
         const textElem = document.getElementById('status-text');
         textElem.innerText = data.best_match;
-        textElem.style.color = data.best_match === "Unknown" ? "#ff4444" : "#4CAF50";
+        textElem.style.color = data.best_match === "Unknown" ? "#ef4444" : "#10b981";
         document.getElementById('dist-info').innerText = "Confidence Dist: " + data.dist;
     });
 
-    function record(gestureName) {
+    function record(name) {
         if (lastFeatures) {
-            socket.emit('record_gesture', {name: gestureName, features: lastFeatures});
+            socket.emit('record_gesture', {name: name, features: lastFeatures});
+            alert("Recorded: " + name);
         } else {
-            alert("No hand detected! Please show your hand to the camera.");
+            alert("Show your hand first!");
         }
     }
-
-    socket.on('record_status', (data) => alert("Successfully recorded: " + data.name));
 </script>
 </body>
 </html>

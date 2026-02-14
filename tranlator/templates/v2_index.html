@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sign Language Interpreter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-error: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            gap: 20px;
+        }
+
+        /* Main Video Area */
+        .video-section {
+            flex: 2;
+            position: relative;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #webcam {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: rotateY(180deg);
+        }
+
+        #output_canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotateY(180deg);
+            z-index: 10;
+        }
+
+        /* Overlay Status */
+        .video-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 320px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .result-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .result-card h3 {
+            margin: 0;
+            color: var(--text-dim);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        #status-text {
+            font-size: 52px;
+            font-weight: 800;
+            margin: 20px 0;
+            background: linear-gradient(to bottom right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        #dist-info {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--text-dim);
+            background: rgba(0,0,0,0.2);
+            padding: 4px 10px;
+            border-radius: 5px;
+        }
+
+        .control-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        button {
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-record {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-record:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+        }
+
+        .hint-text {
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .dot {
+            height: 8px;
+            width: 8px;
+            background-color: var(--accent-success);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="video-section">
+            <div class="video-overlay">
+                <span class="dot"></span> Detection Live
+            </div>
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="output_canvas"></canvas>
+        </div>
+
+        <div class="sidebar">
+            <div class="card result-card">
+                <h3>Translation</h3>
+                <div id="status-text">Standby</div>
+                <div id="dist-info">Confidence Dist: --</div>
+            </div>
+
+            <div class="card control-card">
+                <h4>Gesture Training</h4>
+                <div class="btn-group">
+                    <button class="btn-record" onclick="record('Hello')">
+                        Record "Hello"
+                    </button>
+                    <button class="btn-record" onclick="record('Thank You')">
+                        Record "Thank You"
+                    </button>
+                    <button class="btn-record" style="background: #475569;" onclick="record('Goodbye')">
+                        Record "Goodbye"
+                    </button>
+                </div>
+                <p class="hint-text">
+                    💡 <b>Tip:</b> Position your hand clearly in the frame, hold the gesture, and click a button to sample features.
+                </p>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const socket = io();
+    const videoElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    let lastFeatures = null;
+
+    function normalize(landmarks) {
+        let xs = landmarks.map(l => l.x);
+        let ys = landmarks.map(l => l.y);
+        let centerX = xs.reduce((a,b)=>a+b)/21;
+        let centerY = ys.reduce((a,b)=>a+b)/21;
+        let points = landmarks.map(l => [l.x - centerX, l.y - centerY]);
+        let maxDist = Math.max(...points.map(p => Math.sqrt(p[0]**2 + p[1]**2)));
+        return points.map(p => [p[0]/maxDist, p[1]/maxDist]).flat();
+    }
+
+    function onResults(results) {
+        if (canvasElement.width !== videoElement.videoWidth) {
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+        }
+
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            const lms = results.multiHandLandmarks[0];
+            // High-tech skeleton drawing
+            drawConnectors(canvasCtx, lms, HAND_CONNECTIONS, {color: '#3b82f6', lineWidth: 3});
+            drawLandmarks(canvasCtx, lms, {color: '#ffffff', lineWidth: 1, radius: 2});
+            
+            lastFeatures = normalize(lms);
+            socket.emit('process_frame', {features: lastFeatures});
+        } else {
+            document.getElementById('status-text').innerText = "No Hand";
+            document.getElementById('status-text').style.background = "linear-gradient(to bottom right, #94a3b8, #475569)";
+            document.getElementById('status-text').style.webkitBackgroundClip = "text";
+        }
+        canvasCtx.restore();
+    }
+
+    const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+    hands.setOptions({maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7});
+    hands.onResults(onResults);
+
+    const camera = new Camera(videoElement, {
+        onFrame: async () => { await hands.send({image: videoElement}); },
+        width: 1280, height: 720
+    });
+    camera.start();
+
+    socket.on('response_result', (data) => {
+        const textElem = document.getElementById('status-text');
+        textElem.innerText = data.best_match;
+        
+        if(data.best_match === "Unknown") {
+            textElem.style.background = "linear-gradient(to bottom right, #ef4444, #b91c1c)";
+        } else {
+            textElem.style.background = "linear-gradient(to bottom right, #34d399, #10b981)";
+        }
+        textElem.style.webkitBackgroundClip = "text";
+        document.getElementById('dist-info').innerText = "Confidence Dist: " + parseFloat(data.dist).toFixed(4);
+    });
+
+    function record(gestureName) {
+        if (lastFeatures) {
+            socket.emit('record_gesture', {name: gestureName, features: lastFeatures});
+            const btn = event.currentTarget;
+            const originalText = btn.innerText;
+            btn.innerText = "Saved ✓";
+            btn.style.background = "var(--accent-success)";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = gestureName === 'Goodbye' ? "#475569" : "var(--accent-primary)";
+            }, 1500);
+        } else {
+            alert("Please show your hand to the camera first!");
+        }
+    }
+
+    socket.on('record_status', (data) => console.log("Recorded gesture:", data.name));
+</script>
+</body>
+</html>
