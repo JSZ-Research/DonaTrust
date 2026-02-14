@@ -19,13 +19,11 @@
 				border-top: 1px solid rgba(255, 255, 255, 0.1);
 				padding: 4em 0;
 			}
-			
 			.spotlight .content {
 				background: rgba(23, 24, 32, 0.8) !important;
 				backdrop-filter: blur(10px);
 				-webkit-backdrop-filter: blur(10px);
 			}
-
 			#two.spotlight.right .content {
 				width: 50% !important; 
 				padding: 6em 4em !important; 
@@ -34,19 +32,16 @@
 				width: 100% !important;
 				max-width: 95% !important; 
 			}
-
 			.stat-box {
 				opacity: 0;
 				transform: translateY(30px);
 				transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
 				transition-delay: 0.6s;
 			}
-
 			.spotlight:not(.inactive) .stat-box {
 				opacity: 1;
 				transform: translateY(0);
 			}
-
 			.stat-box h2 {
 				font-weight: 100 !important;
 				text-shadow: 0 0 15px rgba(28, 180, 149, 0.3);
@@ -55,23 +50,17 @@
 				color: #1cb495 !important;
 				margin-bottom: 0 !important;
 			}
-
 			.stat-divider {
 				border-left: 1px solid rgba(255, 255, 255, 0.1);
 				padding-left: 2em !important;
 			}
-
 			.spotlight .content, .wrapper .container {
 				transition: transform 1.2s ease-in-out, opacity 1s ease-in-out !important;
 			}
-			
 			.spotlight.style2.inactive .content { transform: translateX(100%) !important; opacity: 0; }
 			.spotlight.style3.inactive .content { transform: translateX(-100%) !important; opacity: 0; }
 			.spotlight.style1.inactive .content { transform: translateY(100px) !important; opacity: 0; }
 
-			@media screen and (max-width: 1280px) {
-				#two.spotlight.right .content { width: 60% !important; }
-			}
 			@media screen and (max-width: 980px) {
 				#two.spotlight.right .content { width: 100% !important; }
 				.stat-divider {
@@ -86,57 +75,74 @@
 				scroll-snap-type: y mandatory;
 				scroll-behavior: smooth;
 			}
-
-			#banner, 
-			.spotlight, 
-			#footer {
+			#banner, .spotlight, #footer {
 				scroll-snap-align: start;
 				scroll-snap-stop: always;
 			}
-			.btn-blue {
-				background-color: #2563eb !important;
-				box-shadow: inset 0 0 0 2px #2563eb !important; 
-				color: #ffffff !important;
+			#footer { scroll-snap-align: end; }
+
+			#nav ul li a.button {
+				background: transparent !important;
+				border: 2px solid !important;
+				border-radius: 6px !important;
+				height: 2.8em !important;
+				line-height: 2.8em !important;
+				padding: 0 1.5em !important;
+				display: inline-block !important;
+				text-decoration: none !important;
+				font-size: 0.65em !important;
+				font-weight: 700 !important;
+				letter-spacing: 0.15em !important;
+				transition: all 0.3s ease !important;
+				margin-top: -0.5em;
 			}
 
-			.btn-blue:hover {
-				background-color: #1d4ed8 !important; 
-				box-shadow: inset 0 0 0 2px #1d4ed8 !important;
+			#nav ul li a.button.primary:not(.btn-gray):not(.btn-blue):not(.btn-green) {
+				border-color: #e44c65 !important;
+				color: #e44c65 !important;
 			}
-			
-			.btn-gray {
-    			background-color: #4b5563 !important; /* 核心灰色 */
-    			box-shadow: inset 0 0 0 2px #4b5563 !important;
-    			color: #ffffff !important;
-			}
-
-			.btn-gray:hover {
-    			background-color: #374151 !important;
-    			box-shadow: inset 0 0 0 2px #374151 !important;
-    			transform: scale(1.05);
-			}
-			#footer {
-				scroll-snap-align: end; 
-			}
-			.btn-green {
-				background-color: #1cb495 !important; 
-				box-shadow: inset 0 0 0 2px #1cb495 !important;
-				color: #ffffff !important;
+			#nav ul li a.button.primary:not(.btn-gray):not(.btn-blue):not(.btn-green):hover {
+				background: rgba(228, 76, 101, 0.1) !important;
+				color: #fff !important;
+				border-color: #fff !important;
 			}
 
-			.btn-green:hover {
-				background-color: #179b81 !important; 
-				box-shadow: inset 0 0 0 2px #179b81 !important;
-				transform: scale(1.05); 
+			#nav ul li a.btn-gray {
+				border-color: #888888 !important;
+				color: #888888 !important;
+			}
+			#nav ul li a.btn-gray:hover {
+				background: rgba(136, 136, 136, 0.1) !important;
+				color: #fff !important;
+				border-color: #fff !important;
 			}
 
-			.btn-blue:hover {
-				background-color: #1d4ed8 !important;
-				box-shadow: inset 0 0 0 2px #1d4ed8 !important;
-				transform: scale(1.05);
+			#nav ul li a.btn-blue {
+				border-color: #2563eb !important;
+				color: #2563eb !important;
+			}
+			#nav ul li a.btn-blue:hover {
+				background: rgba(37, 99, 235, 0.1) !important;
+				color: #fff !important;
+				border-color: #fff !important;
 			}
 
+			#nav ul li a.btn-green {
+				border-color: #1cb495 !important;
+				color: #1cb495 !important;
+			}
+			#nav ul li a.btn-green:hover {
+				background: rgba(28, 180, 149, 0.1) !important;
+				color: #fff !important;
+				border-color: #fff !important;
+			}
+
+			#nav ul li a:not(.button) {
+				line-height: 2.8em !important;
+				display: inline-block !important;
+			}
 		</style>
+
 	</head>
 	<body class="is-preload landing">
 		<div id="page-wrapper">
@@ -144,17 +150,13 @@
 			<!-- Header -->
 				<header id="header">
 					<h1 id="logo"><a href="../index.html">DonaTrust</a></h1>
-					<h1 id="logo">
-						<a href="../index.html">DonaTrust</a> 
-						<span style="font-size: 0.6em; opacity: 0.6; margin-left: 10px; font-weight: 300;">Powered by <strong style="color: #c0afd5;">SOLANA</strong></span>
-					</h1>
 					<nav id="nav">
 						<ul>
 							<li><a href="../index.html">Home</a></li>
-							<li><a href="../tranlator/templates/index.html" class="button primary external-link" target="_blank">Launch Scanner</a></li>
-							<li><a href="../tranlator/templates/index.html" class="button primary external-link btn-gray" target="_blank">EchoTrans</a></li>
-							<li><a href="./flowchart.html" class="button primary external-link btn-blue" target="_blank">View Live Ledger</a></li>
-							<li><a href="./ledger.html" class="button primary external-link btn-green" target="_blank">Blockchain Ledger</a></li>
+							<li><a href="../tranlator/templates/index.html" class="button primary external-link">Launch Scanner</a></li>
+							<li><a href="../tranlator/templates/index.html" class="button primary external-link btn-gray">EchoTrans</a></li>
+							<li><a href="./flowchart.html" class="button primary external-link btn-blue">View Live Ledger</a></li>
+							<li><a href="./ledger.html" class="button primary external-link btn-green">Blockchain Ledger</a></li>
 						</ul>
 					</nav>
 				</header>
