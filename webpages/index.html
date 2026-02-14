@@ -82,6 +82,21 @@
 					padding-left: 0 !important;
 				}
 			}
+			html {
+				scroll-snap-type: y mandatory;
+				scroll-behavior: smooth;
+			}
+
+			#banner, 
+			.spotlight, 
+			#footer {
+				scroll-snap-align: start;
+				scroll-snap-stop: always;
+			}
+
+			#footer {
+				scroll-snap-align: end; 
+			}
 		</style>
 	</head>
 	<body class="is-preload landing">
