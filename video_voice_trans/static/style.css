@@ -1,0 +1,5 @@
+body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding-top: 50px; }
+.container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+.upload-area { border: 2px dashed #ccc; padding: 30px; border-radius: 8px; margin-bottom: 20px; }
+.btn-primary { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; }
+.btn-primary:hover { background: #0056b3; }
