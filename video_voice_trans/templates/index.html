@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 视频翻译器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 AI 视频翻译器</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-area">
+                <input type="file" name="video" accept="video/*" required>
+                <p>选择视频文件</p>
+            </div>
+            <div style="margin: 20px 0;">
+                <label>选择音色：</label>
+                <select name="voice">
+                    <option value="21m00Tcm4TlvDq8ikWAM">Rachel (柔和女声)</option>
+                    <option value="AZnzlk1XvdvUe3BnKnS2">Nicole (知性女声)</option>
+                    <option value="pNInz6obpgDQGcFmaJgB">Adam (稳重男声)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">开始翻译并下载</button>
+        </form>
+    </div>
+</body>
+</html>
