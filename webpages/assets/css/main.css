@@ -4094,18 +4094,19 @@ input, select, textarea {
 		/* Footer */
 
 			#footer {
-				padding: 3em 1.25em;
+				background: rgba(28, 29, 38, 0.7) !important; /* 半透明背景 */
+				backdrop-filter: blur(12px); /* 核心：模糊背景 */
+				-webkit-backdrop-filter: blur(12px); /* 兼容 Safari */
+				border-top: 1px solid rgba(255, 255, 255, 0.1); /* 顶部细微发光边框 */
+				padding: 4em 0;
 			}
 
-				#footer .copyright {
-					line-height: inherit;
-				}
-
-					#footer .copyright li {
-						border-left: 0;
-						display: block;
-						margin: 0;
-						padding: 0;
-					}
+			/* 如果你想让 Spotlight 的文字框也有这种感觉 */
+			.spotlight .content {
+				background: rgba(23, 24, 32, 0.75) !important;
+				backdrop-filter: blur(10px);
+				-webkit-backdrop-filter: blur(10px);
+				border: 1px solid rgba(255, 255, 255, 0.05);
+			}
 
 	}

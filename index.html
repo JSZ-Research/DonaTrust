@@ -18,9 +18,13 @@
 			</header>
 
 		<!-- Signup Form (Placeholder) -->
-			<form id="signup-form" method="post" action="#">
-				<input type="email" name="email" id="email" placeholder="Enter your email to stay updated..." />
-				<input type="submit" value="Join Now" />
+			<form id="signup-form">
+				<input type="text" id="username" placeholder="Your Name" required style="margin-bottom: 10px;" />
+				<input type="email" id="email" placeholder="Email Address" required />
+				
+				<input type="submit" value="Join Now" id="submit-btn" />
+				
+				<a href="#" id="continue-link" class="button" style="display:none;">Enter Portal</a>
 			</form>
 
 		<!-- Footer -->
@@ -53,6 +57,20 @@
 
 		<!-- Scripts -->
 			<script src="assets/js/main.js"></script>
+			<script>
+				const signupForm = document.getElementById('signup-form');
+				const continueLink = document.getElementById('continue-link');
+
+				signupForm.addEventListener('submit', function(e) {
+					const nameValue = document.getElementById('username').value;
+					
+					setTimeout(() => {
+						continueLink.href = "webpages/index.html?username=" + encodeURIComponent(nameValue);
+						continueLink.style.display = "block";
+						document.getElementById('submit-btn').style.display = "none";
+					}, 1000);
+				});
+			</script>
 
 	</body>
 </html>
