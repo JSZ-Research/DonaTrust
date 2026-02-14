@@ -1,79 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>DonaTrust | Transparency Ledger</title>
+    <title>DonaTrust | Solana Ledger</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <style>
-        #main {
-            padding: 4em 0;
-            text-align: center;
-        }
-        .ledger-status {
-            margin: 2em auto;
-            padding: 2em;
-            border: 1px dashed #ddd;
-            max-width: 600px;
-            border-radius: 8px;
-            color: #999;
-        }
-        .btn-wallet {
-            margin-top: 1em;
-        }
-    </style>
 </head>
 <body class="is-preload">
-
-    <!-- Header -->
     <header id="header">
         <h1 id="logo"><a href="./index.html">DonaTrust</a></h1>
     </header>
 
-    <!-- Main Content -->
     <div id="main">
         <div class="inner">
             <header class="major">
-                <h1>Blockchain Ledger</h1>
-                <p>Verify every donation on the Ethereum network.</p >
+                <h1>Blockchain Ledger (Solana)</h1>
+                <p>Verify donations on the Solana Devnet network.</p>
             </header>
-
             <div class="ledger-status" id="ledgerStatus">
-                <i class="icon solid fa-database" style="font-size: 2em; margin-bottom: 0.5em; display: block;"></i>
-                <p>No active session detected.<br>Please connect your Web3 wallet to synchronize live on-chain data.</p >
-                
-                <ul class="actions stacked">
-                    <li><a href="#" id="connectBtn" class="button primary btn-wallet">Connect MetaMask</a></li>
-                </ul>
+                <button id="connectBtn" class="button primary">Connect Phantom Wallet</button>
             </div>
-
-            <div id="ledgerData" style="display:none;">
-            </div>
+            <div id="ledgerData" style="display:none; margin-top: 2em;"></div>
         </div>
     </div>
 
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script src="https://unpkg.com/@coral-xyz/anchor@latest/dist/browser/anchor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.2/dist/ethers.min.js"></script>
     <script>
-        const contractAddress = "0x2c17b7ee8e8f668E0684732077A50611Df32499d";
-        const abi = [
-            "function numberOfCampaigns() view returns (uint256)",
-            "function campaigns(uint256) view returns (address owner,string title,string description,uint256 target,uint256 deadline,uint256 amountCollected,uint256 amountWithdrawn,string image,string category,address[] donators,uint256[] donations,uint256[] timestamps,string[] messages)",
-            "function getDonators(uint256) view returns (address[] memory,uint256[] memory,uint256[] memory,string[] memory)"
-        ];
+        // 1. 配置 (使用你截图中的 Program ID)
+        const programId = new solanaWeb3.PublicKey("6biq8rnJUgQRLKavwXsbnuPX6aVB..."); 
+        const network = "https://api.devnet.solana.com";
+        const connection = new solanaWeb3.Connection(network, "processed");
+
+        // 2. IDL 内容 (为了方便直接写在 script 里，或者你也可以用 fetch 读取 json)
+        // 注意：这里的结构要和你下载的 JSON 保持一致
+        let idl; 
 
         async function connectWallet() {
-            alert("Please install MetaMask! (DonaTrust requires a Web3 browser extension to verify on-chain data)");
+            if (!window.solana) return alert("Please install Phantom!");
+            try {
+                const resp = await window.solana.connect();
+                document.getElementById("connectBtn").innerText = "Linked: " + resp.publicKey.toString().slice(0, 6);
+                
+                // 加载 IDL 文件
+                const response = await fetch('./src/charity_idl.json');
+                idl = await response.json();
+                
+                loadLedger();
+            } catch (err) { console.error(err); }
         }
-
-        document.getElementById("connectBtn").addEventListener("click", function(e) {
-            e.preventDefault();
-            connectWallet();
-        });
 
         async function loadLedger() {
-            console.log("Ledger system ready. Waiting for provider...");
+            const provider = new anchor.AnchorProvider(connection, window.solana, { preflightCommitment: "processed" });
+            const program = new anchor.Program(idl, programId, provider);
+
+            try {
+                // 获取链上所有活动账户
+                const allCampaigns = await program.account.campaignAccount.all();
+                const ledgerData = document.getElementById("ledgerData");
+                ledgerData.style.display = "block";
+                
+                let html = "<h3>Live Transparency Ledger</h3>";
+                allCampaigns.forEach(c => {
+                    const acc = c.account;
+                    html += `<div style="border: 1px solid #ddd; padding: 10px; margin: 10px;">
+                        <strong>${acc.title}</strong><br>
+                        Goal: ${acc.target / 1000000000} SOL | Collected: ${acc.amountCollected / 1000000000} SOL
+                    </div>`;
+                });
+                ledgerData.innerHTML = html;
+            } catch (err) { console.error(err); }
         }
+
+        document.getElementById("connectBtn").addEventListener("click", connectWallet);
     </script>
 </body>
 </html>
