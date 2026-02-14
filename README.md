@@ -27,7 +27,7 @@ By leveraging blockchain technology, we ensure every drop of kindness is transpa
 ## 🛠️ Technology Stack
 - **Frontend:** HTML5 / CSS3 (Eventually Template by HTML5 UP)
 - **Blockchain:** Decentralized Ledger Technology (DLT)
-- **AI/Translation:** Sign Language to Text/Speech Translation Engine
+- **AI/Translation:** Sign Language to Text Translation Engine
 - **Hosting:** GitHub Pages
 
 ---
