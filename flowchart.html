@@ -1,3 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-gravity Fund Flow</title>
+    <style>
+        :root {
+            --tech-cyan: #00ffcc;
+            --tech-cyan-dim: rgba(0, 255, 204, 0.2);
+            --dark-bg: #0a0a0a;
+            --panel-bg: rgba(15, 15, 15, 0.9);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
 
         body {
             margin: 0;
@@ -9,7 +24,7 @@
             height: 100vh;
         }
 
-        /* Split Layout */
+        
         #left-panel {
             width: 40%;
             height: 100%;
@@ -38,7 +53,7 @@
             min-height: 0;
         }
 
-        
+        /* UI Controls in Left Panel */
         #controls {
             margin-top: 20px;
             padding: 20px;
@@ -109,7 +124,7 @@
             display: block;
         }
     </style>
-    
+   
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="importmap">
         {
@@ -119,6 +134,34 @@
             }
         }
     </script>
+    <style>
+        .secure-label {
+            color: #00ffcc;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: rgba(0, 20, 20, 0.85);
+            padding: 8px;
+            border: 1px solid #00ffcc;
+            border-radius: 4px;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+            text-shadow: 0 0 5px #00ffcc;
+        }
+
+        .secure-header {
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .secure-value {
+            display: block;
+            margin-bottom: 2px;
+        }
+    </style>
 </head>
 
 <body>
@@ -146,6 +189,7 @@
 
     <script type="module">
         import * as THREE from 'three';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
         
         const state = {
@@ -155,7 +199,7 @@
             totalFund: 100000
         };
 
-       
+        
         const ctx = document.getElementById('growthChart').getContext('2d');
 
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -220,9 +264,6 @@
         updateChart();
 
 
-        // ======================================
-        // PART 2: THREE.JS SETUP (HIGH-END DATA ART)
-        // ======================================
 
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000000, 0.02);
@@ -240,6 +281,14 @@
         document.getElementById('canvas-3d').appendChild(renderer.domElement);
 
         
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(container.offsetWidth, container.offsetHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none'; // Allow clicking through
+        document.getElementById('canvas-3d').appendChild(labelRenderer.domElement);
+
+        
         const earthGroup = new THREE.Group();
         scene.add(earthGroup);
 
@@ -249,7 +298,7 @@
 
         const radius = 4.5;
 
-        
+       
         const coreGeo = new THREE.SphereGeometry(radius * 0.98, 48, 48);
         const coreMat = new THREE.MeshBasicMaterial({ color: 0x000508 }); 
         const earthCore = new THREE.Mesh(coreGeo, coreMat);
@@ -277,7 +326,7 @@
         const earthPoints = new THREE.Points(gridGeo, pointsMat);
         earthGroup.add(earthPoints);
 
-        
+       
         const cloudGeo = new THREE.SphereGeometry(radius * 1.2, 32, 32);
         const cloudMat = new THREE.PointsMaterial({
             color: 0x00ffcc,
@@ -302,12 +351,65 @@
         }
 
         
-        const startPoint = latLongToVector3(40.7128, -74.0060, radius);
-        const endPoint = latLongToVector3(51.5074, -0.1278, radius);
+        
+        const startPoint = latLongToVector3(40.7128, -74.0060, radius); 
+        const endPoint = latLongToVector3(1.3521, 103.8198, radius);    
+
+        
+        function generateEncryptedString(length) {
+            const chars = '0123456789ABCDEF@#$%&*';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function createSecureLabel(position, title, ipPrefix) {
+            const div = document.createElement('div');
+            div.className = 'secure-label';
+
+            
+            const nameHash = 'User_' + generateEncryptedString(8);
+            const ipHash = ipPrefix + '.*.*.' + Math.floor(Math.random() * 255);
+
+            div.innerHTML = `
+                <div class="secure-header">SECURE NODE // ${title}</div>
+                <div class="secure-value">ID: ${nameHash}</div>
+                <div class="secure-value">IP: ${ipHash}</div>
+                <div class="secure-value" style="color: #ffff00; font-size: 10px;">[ ENCRYPTED ]</div>
+            `;
+
+            const label = new CSS2DObject(div);
+            label.position.copy(position);
+            
+            label.position.multiplyScalar(1.1);
+            return label;
+        }
+
+        
+        const startLabel = createSecureLabel(startPoint, "ORIGIN", "192.168");
+        const endLabel = createSecureLabel(endPoint, "DESTINATION", "10.244");
+
+        earthGroup.add(startLabel);
+        earthGroup.add(endLabel);
+
+        
+        const markerGeo = new THREE.SphereGeometry(0.08, 16, 16);
+        const startMarker = new THREE.Mesh(markerGeo, new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+        startMarker.position.copy(startPoint);
+        earthGroup.add(startMarker);
+
+        const endMarker = new THREE.Mesh(markerGeo, new THREE.MeshBasicMaterial({ color: 0xff4400 }));
+        endMarker.position.copy(endPoint);
+        earthGroup.add(endMarker);
+
 
         
         const dist = startPoint.distanceTo(endPoint);
-        const mid = startPoint.clone().add(endPoint).multiplyScalar(0.5).normalize().multiplyScalar(radius + dist * 0.5);
+        
+        const mid = startPoint.clone().add(endPoint).multiplyScalar(0.5).normalize().multiplyScalar(radius + dist * 0.7);
+
 
         const curve = new THREE.QuadraticBezierCurve3(startPoint, mid, endPoint);
 
@@ -349,7 +451,7 @@
 
             time += delta;
 
-            
+           
             state.currentFlowRate += (state.targetFlowRate - state.currentFlowRate) * 0.05;
 
             
@@ -379,6 +481,7 @@
             agentMesh.position.copy(pos);
 
             renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
         }
 
         animate();
@@ -388,9 +491,10 @@
             camera.aspect = container.offsetWidth / container.offsetHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(container.offsetWidth, container.offsetHeight);
+            labelRenderer.setSize(container.offsetWidth, container.offsetHeight);
         });
 
-        
+       
         function updateFlow() {
             let inputVal = parseFloat(document.getElementById('fundAmount').value);
 
