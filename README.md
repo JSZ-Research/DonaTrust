@@ -1,7 +1,7 @@
 # DonaTrust (CTRL+HACK+DEL 2.0)
 > **Empowering the Unseen: Bridging the Silence through Blockchain and Visual Language.**
 
-[![Website](https://img.shields.io/badge/Website-DonaTrust-1cb495)](https://jsz-research.github.io/donatrust/)
+[![Website](https://img.shields.io/badge/Website-DonaTrust-1cb495)](https://jsz-research.github.io/DonaTrust/)
 [![Organization](https://img.shields.io/badge/Organization-JSZ--Research-blue)](https://github.com/JSZ-Research)
 
 ## 🌟 Our Mission
