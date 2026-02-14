@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DonaTrust | Transparency Ledger</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+        #main {
+            padding: 4em 0;
+            text-align: center;
+        }
+        .ledger-status {
+            margin: 2em auto;
+            padding: 2em;
+            border: 1px dashed #ddd;
+            max-width: 600px;
+            border-radius: 8px;
+            color: #999;
+        }
+        .btn-wallet {
+            margin-top: 1em;
+        }
+    </style>
+</head>
+<body class="is-preload">
+
+    <!-- Header -->
+    <header id="header">
+        <h1 id="logo"><a href="./index.html">DonaTrust</a></h1>
+    </header>
+
+    <!-- Main Content -->
+    <div id="main">
+        <div class="inner">
+            <header class="major">
+                <h1>Blockchain Ledger</h1>
+                <p>Verify every donation on the Ethereum network.</p >
+            </header>
+
+            <div class="ledger-status" id="ledgerStatus">
+                <i class="icon solid fa-database" style="font-size: 2em; margin-bottom: 0.5em; display: block;"></i>
+                <p>No active session detected.<br>Please connect your Web3 wallet to synchronize live on-chain data.</p >
+                
+                <ul class="actions stacked">
+                    <li><a href="#" id="connectBtn" class="button primary btn-wallet">Connect MetaMask</a></li>
+                </ul>
+            </div>
+
+            <div id="ledgerData" style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <p class="copyright">&copy; DonaTrust Project. Engineered by Linxi & Team JSZ.</p >
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.2/dist/ethers.min.js"></script>
+    <script>
+        const contractAddress = "0x2c17b7ee8e8f668E0684732077A50611Df32499d";
+        const abi = [
+            "function numberOfCampaigns() view returns (uint256)",
+            "function campaigns(uint256) view returns (address owner,string title,string description,uint256 target,uint256 deadline,uint256 amountCollected,uint256 amountWithdrawn,string image,string category,address[] donators,uint256[] donations,uint256[] timestamps,string[] messages)",
+            "function getDonators(uint256) view returns (address[] memory,uint256[] memory,uint256[] memory,string[] memory)"
+        ];
+
+        async function connectWallet() {
+            alert("Please install MetaMask! (DonaTrust requires a Web3 browser extension to verify on-chain data)");
+        }
+
+        document.getElementById("connectBtn").addEventListener("click", function(e) {
+            e.preventDefault();
+            connectWallet();
+        });
+
+        async function loadLedger() {
+            console.log("Ledger system ready. Waiting for provider...");
+        }
+    </script>
+</body>
+</html>
