@@ -53,7 +53,7 @@
             min-height: 0;
         }
 
-        /* UI Controls in Left Panel */
+        
         #controls {
             margin-top: 20px;
             padding: 20px;
@@ -253,7 +253,7 @@
             const baseWave = Math.sin(chartTime) * 1000;
             const inputInfluence = (state.currentFlowRate / 5000) * 5000 * Math.sin(chartTime * 1.5);
 
-            const value = state.baseFund + baseWave + inputInfluence + (chartTime * 100); // Slight upward trend
+            const value = state.baseFund + baseWave + inputInfluence + (chartTime * 100); 
 
             growthChart.data.datasets[0].data.shift();
             growthChart.data.datasets[0].data.push(value);
