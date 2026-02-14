@@ -45,9 +45,9 @@ A collaborative research group dedicated to social impact through technology.
 ---
 
 ## 🚀 Getting Started
-1. **Visit the Platform:** [DonaTrust Live](https://jsz-research.github.io/donatrust/)
+1. **Visit the Platform:** [DonaTrust Live](https://jsz-research.github.io/DonaTrust/)
 2. **Local Development:**
    ```bash
-   git clone https://github.com/JSZ-Research/donatrust.git
-   cd donatrust
+   git clone https://github.com/JSZ-Research/DonaTrust.git
+   cd DonaTrust
    # Open index.html in your favorite browser
