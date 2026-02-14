@@ -1,0 +1,6 @@
+# DonaTrust Sign Translator 依赖
+# 需要 Python 3.9 ~ 3.12（推荐 3.10）
+# mediapipe >= 0.10.15 移除了 mp.solutions API，因此锁定 0.10.14
+mediapipe==0.10.14
+opencv-python>=4.8.0
+numpy>=1.24.0
