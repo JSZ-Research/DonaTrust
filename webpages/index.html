@@ -93,10 +93,38 @@
 				scroll-snap-align: start;
 				scroll-snap-stop: always;
 			}
+			.btn-blue {
+				background-color: #2563eb !important;
+				box-shadow: inset 0 0 0 2px #2563eb !important; 
+				color: #ffffff !important;
+			}
+
+			.btn-blue:hover {
+				background-color: #1d4ed8 !important; 
+				box-shadow: inset 0 0 0 2px #1d4ed8 !important;
+			}
 
 			#footer {
 				scroll-snap-align: end; 
 			}
+			.btn-green {
+				background-color: #1cb495 !important; 
+				box-shadow: inset 0 0 0 2px #1cb495 !important;
+				color: #ffffff !important;
+			}
+
+			.btn-green:hover {
+				background-color: #179b81 !important; 
+				box-shadow: inset 0 0 0 2px #179b81 !important;
+				transform: scale(1.05); 
+			}
+
+			.btn-blue:hover {
+				background-color: #1d4ed8 !important;
+				box-shadow: inset 0 0 0 2px #1d4ed8 !important;
+				transform: scale(1.05);
+			}
+
 		</style>
 	</head>
 	<body class="is-preload landing">
@@ -104,11 +132,10 @@
 
 			<!-- Header -->
 				<header id="header">
-					<h1 id="logo"><a href="./index.html">DonaTrust</a></h1>
+					<h1 id="logo"><a href="../index.html">DonaTrust</a></h1>
 					<nav id="nav">
 						<ul>
 							<li><a href="../index.html">Home</a></li>
-							<!-- 增加 external-link 类方便 JS 识别 -->
 							<li><a href="../tranlator/templates/index.html" class="button primary external-link" target="_blank">Launch Scanner</a></li>
 						</ul>
 					</nav>
@@ -175,7 +202,7 @@
 									</header>
 									<p>Every donation is recorded on our simulated blockchain. We ensure 100% transparency, showing exactly how funds travel from donors to remote classrooms without intermediaries.</p>
 									<ul class="actions">
-										<li><a href="#" class="button">View Live Ledger</a></li>
+										<li><a href="./flowchart.html" class="button primary external-link btn-blue" target="_blank">View Live Ledger</a></li>
 									</ul>
 								</div>
 								<div class="col-5 col-12-medium align-center stat-divider">
@@ -214,7 +241,7 @@
 			<!-- Footer -->
 				<footer id="footer">
 					<ul class="actions special">
-						<li><a href="../tranlator/templates/index.html" class="button primary large external-link" target="_blank">Start Scanning Now</a></li>
+						<li><a href="./ledger.html" class="button primary large external-link btn-green" target="_blank">Blockchain Ledger</a></li>
 					</ul>
 					<ul class="icons">
 						<li><a href="https://github.com/JSZ-Research" class="icon brands alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
