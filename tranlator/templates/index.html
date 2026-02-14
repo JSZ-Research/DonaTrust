@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Sign Language Interpreter - Serverless</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    
+    <style>
+        :root { --bg: #0f172a; --accent: #3b82f6; --success: #10b981; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        .app-container { display: flex; width: 100%; padding: 20px; gap: 20px; }
+        .video-section { flex: 2; position: relative; background: #000; border-radius: 20px; overflow: hidden; border: 1px solid #334155; }
+        #webcam { width: 100%; height: 100%; object-fit: cover; transform: rotateY(180deg); }
+        #output_canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotateY(180deg); }
+        .sidebar { flex: 0.8; display: flex; flex-direction: column; gap: 20px; min-width: 300px; }
+        .card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border-radius: 20px; padding: 24px; border: 1px solid #334155; }
+        .result-card { text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        #status-text { font-size: 48px; font-weight: 800; margin: 20px 0; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        button { padding: 14px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; background: var(--accent); color: white; }
+        .dist-label { font-family: monospace; color: #94a3b8; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="video-section">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="output_canvas"></canvas>
+    </div>
+
+    <div class="sidebar">
+        <div class="card result-card">
+            <h3 style="color: #94a3b8; text-transform: uppercase; font-size: 14px;">Live Translation</h3>
+            <div id="status-text">Standby</div>
+            <div id="dist-info" class="dist-label">Dist: --</div>
+        </div>
+
+        <div class="card">
+            <h4>Training Actions (Client-Side)</h4>
+            <div class="btn-group">
+                <button onclick="record('Hello')">Record "Hello"</button>
+                <button onclick="record('Thank You')">Record "Thank You"</button>
+                <button style="background: #475569;" onclick="record('Goodbye')">Record "Goodbye"</button>
+                <button style="background: #ef4444; margin-top: 10px;" onclick="clearData()">Clear All Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const videoElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    
+    // Threshold for matching (lower is stricter)
+    const MATCH_THRESHOLD = 0.4;
+    let lastFeatures = null;
+    
+    // Load templates from LocalStorage instead of Python/JSON
+    let templates = JSON.parse(localStorage.getItem('my_gestures') || '{}');
+
+    // --- Normalization Logic ---
+    function normalize(landmarks) {
+        const points = landmarks.map(l => ({x: l.x, y: l.y}));
+        const centerX = points.reduce((s, p) => s + p.x, 0) / 21;
+        const centerY = points.reduce((s, p) => s + p.y, 0) / 21;
+        
+        let maxDist = 0;
+        const centered = points.map(p => {
+            const dx = p.x - centerX;
+            const dy = p.y - centerY;
+            const d = Math.sqrt(dx*dx + dy*dy);
+            if (d > maxDist) maxDist = d;
+            return {dx, dy};
+        });
+        
+        const features = [];
+        centered.forEach(p => {
+            features.push(p.dx / (maxDist || 1));
+            features.push(p.dy / (maxDist || 1));
+        });
+        return features;
+    }
+
+    // --- Euclidean Distance Calculation (Replacement for NumPy) ---
+    function getDistance(v1, v2) {
+        return Math.sqrt(v1.reduce((sum, val, i) => sum + Math.pow(val - v2[i], 2), 0));
+    }
+
+    function onResults(results) {
+        if (canvasElement.width !== videoElement.videoWidth) {
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+        }
+
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            const lms = results.multiHandLandmarks[0];
+            drawConnectors(canvasCtx, lms, HAND_CONNECTIONS, {color: '#3b82f6', lineWidth: 4});
+            drawLandmarks(canvasCtx, lms, {color: '#ffffff', lineWidth: 1, radius: 2});
+            
+            lastFeatures = normalize(lms);
+            
+            // Perform matching directly in JS
+            let minDist = Infinity;
+            let bestMatch = "Unknown";
+
+            for (const [name, temp] of Object.entries(templates)) {
+                const d = getDistance(lastFeatures, temp);
+                if (d < minDist) {
+                    minDist = d;
+                    bestMatch = name;
+                }
+            }
+
+            const textElem = document.getElementById('status-text');
+            if (minDist < MATCH_THRESHOLD) {
+                textElem.innerText = bestMatch;
+                textElem.style.color = "#10b981";
+            } else {
+                textElem.innerText = "Unknown";
+                textElem.style.color = "#ef4444";
+            }
+            document.getElementById('dist-info').innerText = "Dist: " + minDist.toFixed(4);
+
+        } else {
+            document.getElementById('status-text').innerText = "No Hand";
+            document.getElementById('status-text').style.color = "#64748b";
+        }
+        canvasCtx.restore();
+    }
+
+    // MediaPipe Setup
+    const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+    hands.setOptions({maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7});
+    hands.onResults(onResults);
+
+    const camera = new Camera(videoElement, {
+        onFrame: async () => { await hands.send({image: videoElement}); },
+        width: 1280, height: 720
+    });
+    camera.start();
+
+    // Training logic
+    function record(name) {
+        if (lastFeatures) {
+            templates[name] = lastFeatures;
+            localStorage.setItem('my_gestures', JSON.stringify(templates));
+            alert("Gesture '" + name + "' saved to your browser!");
+        } else {
+            alert("No hand detected!");
+        }
+    }
+
+    function clearData() {
+        if(confirm("Delete all saved gestures?")) {
+            templates = {};
+            localStorage.removeItem('my_gestures');
+            location.reload();
+        }
+    }
+</script>
+</body>
+</html>
