@@ -7,6 +7,47 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" type="image/png" href="images/favicon.png"/>
+		<style>
+			#footer {
+				background: rgba(28, 29, 38, 0.7) !important;
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.stat-box h2 {
+				font-weight: 100 !important;
+				text-shadow: 0 0 20px rgba(28, 180, 149, 0.4);
+				letter-spacing: -2px;
+			}
+			.stat-divider {
+				border-left: 1px solid rgba(255, 255, 255, 0.1);
+				padding-left: 2em !important;
+			}
+
+			#two.spotlight.right .content {
+				width: 50% !important; 
+				padding: 6em 4em !important; 
+			}
+			#two.spotlight.right .content .container {
+				width: 100% !important;
+				max-width: 95% !important; 
+			}
+
+			@media screen and (max-width: 1280px) {
+				#two.spotlight.right .content { width: 60% !important; }
+			}
+			@media screen and (max-width: 980px) {
+				#two.spotlight.right .content { width: 100% !important; }
+				.stat-divider {
+					border-left: 0 !important;
+					border-top: 1px solid rgba(255, 255, 255, 0.1);
+					margin-top: 2em;
+					padding-top: 2em !important;
+					padding-left: 0 !important;
+				}
+			}
+		</style>
 	</head>
 	<body class="is-preload landing">
 		<div id="page-wrapper">
@@ -16,7 +57,7 @@
 					<h1 id="logo"><a href="../index.html">DonaTrust</a></h1>
 					<nav id="nav">
 						<ul>
-							<li><a href="index.html">Home</a></li>
+							<li><a href="../index.html">Home</a></li>
 							<li><a href="scan.html" class="button primary">Launch Scanner</a></li>
 						</ul>
 					</nav>
@@ -38,23 +79,31 @@
 					<a href="#one" class="goto-next scrolly">Next</a>
 				</section>
 
-			<!-- One: Sign Language AI -->
+			<!-- One: Sign Language AI + Data -->
 				<section id="one" class="spotlight style1 bottom">
 					<span class="image fit main"><img src="images/pic02.jpg" alt="" /></span>
 					<div class="content">
 						<div class="container">
-							<div class="row">
-								<div class="col-4 col-12-medium">
+							<div class="row aln-middle">
+								<div class="col-7 col-12-medium">
 									<header>
 										<h2>Sign Language AI</h2>
 										<p>Real-time Gratitude Translation</p>
 									</header>
-								</div>
-								<div class="col-8 col-12-medium">
 									<p>Our AI engine translates sign language into text and diverse languages in real-time. This allows beneficiaries to express their gratitude directly to donors, breaking the silence in charity.</p>
 									<ul class="actions">
 										<li><a href="scan.html" class="button primary">Open Scanner</a></li>
 									</ul>
+								</div>
+								<div class="col-5 col-12-medium align-center stat-divider">
+									<div class="stat-box" style="margin-bottom: 2em;">
+										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">34M+</h2>
+										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Children with Hearing Loss</p>
+									</div>
+									<div class="stat-box">
+										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">80%</h2>
+										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Living in Remote Areas</p>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -62,23 +111,39 @@
 					<a href="#two" class="goto-next scrolly">Next</a>
 				</section>
 
-			<!-- Two: Blockchain Ledger -->
+			<!-- Two: Blockchain Ledger + Data (Wide Layout) -->
 				<section id="two" class="spotlight style2 right">
 					<span class="image fit main"><img src="images/pic03.jpg" alt="" /></span>
 					<div class="content">
-						<header>
-							<h2>Decentralized Trust</h2>
-							<p>Immutable & Transparent Ledger</p>
-						</header>
-						<p>Every donation is recorded on our simulated blockchain. We ensure 100% transparency, showing exactly how funds travel from donors to remote classrooms without intermediaries.</p>
-						<ul class="actions">
-							<li><a href="#" class="button">View Ledger</a></li>
-						</ul>
+						<div class="container">
+							<div class="row aln-middle">
+								<div class="col-7 col-12-medium">
+									<header>
+										<h2>Decentralized Trust</h2>
+										<p>Immutable & Transparent Ledger</p>
+									</header>
+									<p>Every donation is recorded on our simulated blockchain. We ensure 100% transparency, showing exactly how funds travel from donors to remote classrooms without intermediaries.</p>
+									<ul class="actions">
+										<li><a href="#" class="button">View Live Ledger</a></li>
+									</ul>
+								</div>
+								<div class="col-5 col-12-medium align-center stat-divider">
+									<div class="stat-box" style="margin-bottom: 2em;">
+										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">30%</h2>
+										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Fund Loss in Old Charity</p>
+									</div>
+									<div class="stat-box">
+										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">0%</h2>
+										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Intermediary Fee</p>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<a href="#three" class="goto-next scrolly">Next</a>
 				</section>
 
-			<!-- Three: Social Impact -->
+			<!-- Three: Inspiration (Final Concept) -->
 				<section id="three" class="spotlight style3 left">
 					<span class="image fit main bottom"><img src="images/pic04.jpg" alt="" /></span>
 					<div class="content">
@@ -86,11 +151,16 @@
 							<h2>The Inspiration behind CTRL+HACK+DEL</h2>
 							<p>Technology should never leave anyone behind</p>
 						</header>
-						<p>DonaTrust started with a simple question: How can we use the most advanced tech to help the most invisible people? We believe that a disability should not be a barrier to love and education. By deleting distance and hacking barriers, we control a new future where gratitude has its own visual language.</p>
+						<p>
+							DonaTrust started with a simple question: How can we use the most advanced tech to help the most invisible people? 
+							We believe that a disability should not be a barrier to love and education. 
+							By <strong>Deleting</strong> distance and <strong>Hacking</strong> barriers, 
+							we <strong>Control</strong> a new future where gratitude has its own visual language.
+						</p>
 					</div>
 				</section>
 
-			<!-- Footer (Merged CTA & Info) -->
+			<!-- Footer (Merged CTA & Glassmorphism) -->
 				<footer id="footer">
 					<ul class="actions special">
 						<li><a href="scan.html" class="button primary large">Start Scanning Now</a></li>
@@ -116,6 +186,7 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script>
+				// Get name from URL
 				const params = new URLSearchParams(window.location.search);
 				const user = params.get('username');
 				if (user) {
