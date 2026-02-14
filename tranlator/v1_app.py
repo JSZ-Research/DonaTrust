@@ -5,28 +5,28 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
+# Initialize SocketIO with CORS allowed for local development
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 DATA_FILE = "gestures.json"
-# Adjusted threshold for normalized Euclidean distance
-MATCH_THRESHOLD = 0.4 
+MATCH_THRESHOLD = 0.25
 
 def load_templates():
-    """Load hand feature templates from JSON."""
+    """Load saved gesture features from JSON file."""
     if os.path.exists(DATA_FILE):
         try:
             with open(DATA_FILE, 'r') as f:
                 data = json.load(f)
-                # Ensure every template is a flat numpy array
-                return {k: np.array(v).flatten() for k, v in data.items()}
+                return {k: np.array(v) for k, v in data.items()}
         except Exception as e:
             print(f"Error loading templates: {e}")
     return {}
 
+# Global variable to store gesture templates
 templates = load_templates()
 
 def save_templates(t_dict):
-    """Save templates to local JSON file."""
+    """Save current templates to JSON file."""
     try:
         serializable_data = {k: v.tolist() for k, v in t_dict.items()}
         with open(DATA_FILE, 'w') as f:
@@ -36,47 +36,43 @@ def save_templates(t_dict):
 
 @app.route('/')
 def index():
+    """Render the main UI."""
     return render_template('index.html')
 
 @socketio.on('process_frame')
 def handle_frame(data):
+    """Compare incoming features with saved templates."""
     global templates
-    features_list = data.get('features')
-    
-    if not features_list or len(features_list) != 42:
+    if not data.get('features'):
         return
 
-    # Convert incoming list to numpy array
-    input_vec = np.array(features_list)
-    
+    features = np.array(data['features'])
     min_dist = float('inf')
     best_match = "Unknown"
     
     for name, temp in templates.items():
-        if temp.shape != input_vec.shape:
-            continue
-            
-        # Standard Euclidean distance
-        dist = np.linalg.norm(input_vec - temp)
+        dist = np.linalg.norm(features - temp)
         if dist < min_dist:
             min_dist = dist
             best_match = name
     
-    # Send result back to frontend
-    emit('response_result', {
+    # Return result only if distance is within threshold
+    result = {
         "best_match": best_match if min_dist < MATCH_THRESHOLD else "Unknown",
-        "dist": round(float(min_dist), 4)
-    })
+        "dist": round(float(min_dist), 3)
+    }
+    emit('response_result', result)
 
 @socketio.on('record_gesture')
 def handle_record(data):
+    """Save a new gesture template sent from the frontend."""
     global templates
     name = data['name']
-    features = np.array(data['features']).flatten()
+    features = np.array(data['features'])
     templates[name] = features
     save_templates(templates)
     emit('record_status', {"status": "success", "name": name})
 
 if __name__ == '__main__':
-    # Using port 5001 to avoid macOS AirPlay conflicts
+    # Run on port 5001 to avoid AirPlay conflict on macOS
     socketio.run(app, host='0.0.0.0', port=5001, debug=True)
