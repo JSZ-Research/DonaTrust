@@ -173,7 +173,7 @@
         </div>
 
         <div id="controls">
-            <label>FUND INJECTION RATE ($/sec) - CONTROLS CHART AMPLITUDE</label>
+            <label>TRANSFER BANDWIDTH CONTROL (KB/s) - ADJUST NETWORK SPEED</label>
             <div class="control-group">
                 <input type="number" id="fundAmount" value="5000" max="5000">
                 <button id="injectBtn">UPDATE FLOW</button>
@@ -209,14 +209,14 @@
         const chartConfig = {
             type: 'line',
             data: {
-                labels: Array(50).fill(''),
+                labels: Array(120).fill(''),
                 datasets: [{
-                    label: 'Total Asset Value',
-                    data: Array(50).fill(state.baseFund),
+                    label: 'Network Speed',
+                    data: Array(120).fill(5000),
                     borderColor: '#00ffcc',
                     backgroundColor: gradient,
-                    borderWidth: 2,
-                    tension: 0.4,
+                    borderWidth: 1.5,
+                    tension: 0.1,
                     pointRadius: 0,
                     fill: true
                 }]
@@ -231,7 +231,15 @@
                     x: { display: false },
                     y: {
                         grid: { color: '#222' },
-                        ticks: { color: '#666' }
+                        ticks: { 
+                            color: '#666',
+                            callback: function(value) {
+                                if (value >= 1000) {
+                                    return (value / 1000).toFixed(1) + ' MB/s';
+                                }
+                                return value.toFixed(0) + ' KB/s';
+                            }
+                        }
                     }
                 },
                 plugins: {
@@ -245,19 +253,33 @@
 
         
         let chartTime = 0;
+        let noiseOffset = 0;
+        let lastValue = 5000;
+        let frameCounter = 0;
 
         function updateChart() {
-            chartTime += 0.05;
-
+            frameCounter++;
             
-            const baseWave = Math.sin(chartTime) * 1000;
-            const inputInfluence = (state.currentFlowRate / 5000) * 5000 * Math.sin(chartTime * 1.5);
+            if (frameCounter % 8 === 0) {
+                chartTime += 0.02;
+                noiseOffset += 0.03;
 
-            const value = state.baseFund + baseWave + inputInfluence + (chartTime * 100); 
+                
+                const randomWalk = (Math.random() - 0.5) * 100;
+                const perlinLike = Math.sin(noiseOffset * 0.3) * Math.cos(noiseOffset * 0.7) * 200;
+                const spike = Math.random() < 0.02 ? (Math.random() - 0.5) * 400 : 0;
+                
+                const baseSpeed = (state.currentFlowRate / 5000) * 4000 + 1000;
+                const inputInfluence = (Math.random() * 500 + baseSpeed);
 
-            growthChart.data.datasets[0].data.shift();
-            growthChart.data.datasets[0].data.push(value);
-            growthChart.update('none'); 
+                
+                const targetValue = inputInfluence + perlinLike;
+                lastValue += (targetValue - lastValue + randomWalk + spike) * 0.15;
+
+                growthChart.data.datasets[0].data.shift();
+                growthChart.data.datasets[0].data.push(Math.max(0, lastValue));
+                growthChart.update('none');
+            }
 
             requestAnimationFrame(updateChart);
         }
