@@ -93,7 +93,7 @@
 					<nav id="nav">
 						<ul>
 							<li><a href="../index.html">Home</a></li>
-							<li><a href="../tranlator/templates/index.html" class="button primary">Launch Scanner</a></li>
+							<li><a href="../tranlator/templates/index.html" class="button primary" target="_blank" rel="noopener noreferrer">Launch Scanner</a></li>
 						</ul>
 					</nav>
 				</header>
@@ -127,7 +127,7 @@
 									</header>
 									<p>Our AI engine translates sign language into text and diverse languages in real-time. This allows beneficiaries to express their gratitude directly to donors, breaking the silence in charity.</p>
 									<ul class="actions">
-										<li><a href="../tranlator/templates/index.html" class="button primary">Open Scanner</a></li>
+										<li><a href="../tranlator/templates/index.html" class="button primary" target="_blank" rel="noopener noreferrer">Open Scanner</a></li>
 									</ul>
 								</div>
 								<div class="col-5 col-12-medium align-center stat-divider">
@@ -159,7 +159,7 @@
 									</header>
 									<p>Every donation is recorded on our simulated blockchain. We ensure 100% transparency, showing exactly how funds travel from donors to remote classrooms without intermediaries.</p>
 									<ul class="actions">
-										<li><a href="#" class="button">View Live Ledger</a></li>
+										<li><a href="#" class="button" target="_blank" rel="noopener noreferrer">View Live Ledger</a></li>
 									</ul>
 								</div>
 								<div class="col-5 col-12-medium align-center stat-divider">
@@ -198,10 +198,10 @@
 			<!-- Footer -->
 				<footer id="footer">
 					<ul class="actions special">
-						<li><a href="../tranlator/templates/index.html" class="button primary large">Start Scanning Now</a></li>
+						<li><a href="../tranlator/templates/index.html" class="button primary large" target="_blank" rel="noopener noreferrer">Start Scanning Now</a></li>
 					</ul>
 					<ul class="icons">
-						<li><a href="https://github.com/JSZ-Research" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+						<li><a href="https://github.com/JSZ-Research" class="icon brands alt fa-github" target="_blank" rel="noopener noreferrer"><span class="label">GitHub</span></a></li>
 						<li><a href="mailto:linjiamu49@gmail.com" class="icon solid alt fa-envelope"><span class="label">Email</span></a></li>
 					</ul>
 					<ul class="copyright">
@@ -258,6 +258,15 @@
 				}, observerOptions);
 
 				document.querySelectorAll('.spotlight').forEach(s => dataObserver.observe(s));
+
+				document.querySelectorAll('a[href*="tranlator"]').forEach(link => {
+					link.addEventListener('click', function(e) {
+						if (user) {
+							const separator = this.href.includes('?') ? '&' : '?';
+							this.href = this.href.split('?')[0] + separator + "username=" + encodeURIComponent(user);
+						}
+					});
+				});
 			</script>
 
 	</body>
