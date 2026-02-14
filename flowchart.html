@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-gravity Fund Flow</title>
+    <style>
+        :root {
+            --tech-cyan: #00ffcc;
+            --tech-cyan-dim: rgba(0, 255, 204, 0.2);
+            --dark-bg: #0a0a0a;
+            --panel-bg: rgba(15, 15, 15, 0.9);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--dark-bg);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Split Layout */
+        #left-panel {
+            width: 40%;
+            height: 100%;
+            border-right: 1px solid var(--border-color);
+            box-sizing: border-box;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            position: relative;
+            z-index: 2;
+        }
+
+        #right-panel {
+            position: relative;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+        }
+
+        
+        #chart-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            min-height: 0;
+        }
+
+        
+        #controls {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            color: var(--tech-cyan);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            flex: 1;
+            font-family: monospace;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--tech-cyan);
+        }
+
+        button {
+            background: var(--tech-cyan-dim);
+            color: var(--tech-cyan);
+            border: 1px solid var(--tech-cyan);
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--tech-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--tech-cyan-dim);
+        }
+
+        #stats {
+            margin-top: 10px;
+            font-family: monospace;
+            color: #666;
+            font-size: 12px;
+        }
+
+        #canvas-3d {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    
+    <div id="left-panel">
+        <div id="chart-container">
+            <canvas id="growthChart"></canvas>
+        </div>
+
+        <div id="controls">
+            <label>FUND INJECTION RATE ($/sec) - CONTROLS CHART AMPLITUDE</label>
+            <div class="control-group">
+                <input type="number" id="fundAmount" value="5000" max="5000">
+                <button id="injectBtn">UPDATE FLOW</button>
+            </div>
+            <div id="stats">Current Flow Speed: <span id="speedDisplay">1.0</span>x</div>
+        </div>
+    </div>
+
+    
+    <div id="right-panel">
+        <div id="canvas-3d"></div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        
+        const state = {
+            targetFlowRate: 5000,
+            currentFlowRate: 5000,
+            baseFund: 100000,
+            totalFund: 100000
+        };
+
+       
+        const ctx = document.getElementById('growthChart').getContext('2d');
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(0, 255, 204, 0.5)');
+        gradient.addColorStop(1, 'rgba(0, 255, 204, 0.0)');
+
+        const chartConfig = {
+            type: 'line',
+            data: {
+                labels: Array(50).fill(''),
+                datasets: [{
+                    label: 'Total Asset Value',
+                    data: Array(50).fill(state.baseFund),
+                    borderColor: '#00ffcc',
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 0 
+                },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        grid: { color: '#222' },
+                        ticks: { color: '#666' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            }
+        };
+
+        const growthChart = new Chart(ctx, chartConfig);
+
+        
+        let chartTime = 0;
+
+        function updateChart() {
+            chartTime += 0.05;
+
+            
+            const baseWave = Math.sin(chartTime) * 1000;
+            const inputInfluence = (state.currentFlowRate / 5000) * 5000 * Math.sin(chartTime * 1.5);
+
+            const value = state.baseFund + baseWave + inputInfluence + (chartTime * 100); // Slight upward trend
+
+            growthChart.data.datasets[0].data.shift();
+            growthChart.data.datasets[0].data.push(value);
+            growthChart.update('none'); 
+
+            requestAnimationFrame(updateChart);
+        }
+        updateChart();
+
+
+        // ======================================
+        // PART 2: THREE.JS SETUP (HIGH-END DATA ART)
+        // ======================================
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+        const container = document.getElementById('right-panel');
+        const aspect = container.offsetWidth / container.offsetHeight;
+        const camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+        camera.position.z = 16;
+        camera.position.y = 4;
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('canvas-3d').appendChild(renderer.domElement);
+
+        
+        const earthGroup = new THREE.Group();
+        scene.add(earthGroup);
+
+        
+        earthGroup.rotation.z = 0.1;
+        earthGroup.rotation.y = -Math.PI / 2;
+
+        const radius = 4.5;
+
+        
+        const coreGeo = new THREE.SphereGeometry(radius * 0.98, 48, 48);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0x000508 }); 
+        const earthCore = new THREE.Mesh(coreGeo, coreMat);
+        earthGroup.add(earthCore);
+
+        
+        const gridGeo = new THREE.SphereGeometry(radius, 48, 48);
+        const gridMat = new THREE.MeshBasicMaterial({
+            color: 0x005544,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const earthGrid = new THREE.Mesh(gridGeo, gridMat);
+        earthGroup.add(earthGrid);
+
+        
+        const pointsMat = new THREE.PointsMaterial({
+            color: 0x00aa88,
+            size: 0.06,
+            transparent: true,
+            opacity: 0.4,
+            sizeAttenuation: true
+        });
+        const earthPoints = new THREE.Points(gridGeo, pointsMat);
+        earthGroup.add(earthPoints);
+
+        
+        const cloudGeo = new THREE.SphereGeometry(radius * 1.2, 32, 32);
+        const cloudMat = new THREE.PointsMaterial({
+            color: 0x00ffcc,
+            size: 0.04,
+            transparent: true,
+            opacity: 0.2
+        });
+        const earthCloud = new THREE.Points(cloudGeo, cloudMat);
+        scene.add(earthCloud); 
+
+        
+        const flightGroup = new THREE.Group();
+        earthGroup.add(flightGroup);
+
+        function latLongToVector3(lat, lon, r) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const x = -(r * Math.sin(phi) * Math.cos(theta));
+            const z = (r * Math.sin(phi) * Math.sin(theta));
+            const y = (r * Math.cos(phi));
+            return new THREE.Vector3(x, y, z);
+        }
+
+        
+        const startPoint = latLongToVector3(40.7128, -74.0060, radius);
+        const endPoint = latLongToVector3(51.5074, -0.1278, radius);
+
+        
+        const dist = startPoint.distanceTo(endPoint);
+        const mid = startPoint.clone().add(endPoint).multiplyScalar(0.5).normalize().multiplyScalar(radius + dist * 0.5);
+
+        const curve = new THREE.QuadraticBezierCurve3(startPoint, mid, endPoint);
+
+        
+        const points = curve.getPoints(50);
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+        const lineMat = new THREE.LineBasicMaterial({
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.3
+        });
+        const pathLine = new THREE.Line(lineGeo, lineMat);
+        flightGroup.add(pathLine);
+
+        
+        const agentGeo = new THREE.SphereGeometry(0.12, 16, 16);
+        const agentMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const agentMesh = new THREE.Mesh(agentGeo, agentMat);
+        flightGroup.add(agentMesh);
+
+        
+        const agentState = {
+            t: 0,
+            speed: 0.2 
+        };
+
+        
+        let time = 0;
+
+        
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            
+            let delta = clock.getDelta();
+            if (delta > 0.1) delta = 0.1;
+
+            time += delta;
+
+            
+            state.currentFlowRate += (state.targetFlowRate - state.currentFlowRate) * 0.05;
+
+            
+            let displayValue;
+            if (state.currentFlowRate > 1000000) {
+                displayValue = (state.currentFlowRate / 1000000).toFixed(1) + 'M';
+            } else {
+                displayValue = Math.floor(state.currentFlowRate).toLocaleString();
+            }
+            const speedDisplay = document.getElementById('speedDisplay');
+            if (speedDisplay) speedDisplay.innerText = displayValue;
+
+            
+            earthGroup.rotation.y += 0.02 * delta;
+            earthCloud.rotation.y -= 0.01 * delta;
+
+            
+            camera.position.x = Math.sin(time * 0.1) * 0.5;
+            camera.position.y = 4 + Math.cos(time * 0.15) * 0.5;
+            camera.lookAt(0, 0, 0);
+
+            
+            agentState.t += agentState.speed * delta;
+            if (agentState.t > 1) agentState.t = 0;
+
+            const pos = curve.getPoint(agentState.t);
+            agentMesh.position.copy(pos);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('right-panel');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+
+        
+        function updateFlow() {
+            let inputVal = parseFloat(document.getElementById('fundAmount').value);
+
+            
+            if (inputVal > 5000) {
+                inputVal = 5000;
+                document.getElementById('fundAmount').value = 5000;
+            }
+            if (inputVal < 0) inputVal = 0;
+
+            if (!isNaN(inputVal)) {
+                state.targetFlowRate = inputVal;
+
+                const btn = document.getElementById('injectBtn');
+                btn.style.background = '#fff';
+                setTimeout(() => btn.style.background = '', 200);
+            }
+        }
+
+        document.getElementById('injectBtn').addEventListener('click', updateFlow);
+        document.getElementById('fundAmount').addEventListener('change', updateFlow);
+
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('right-panel');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+    </script>
+</body>
+
+</html>
