@@ -1,4 +1,8 @@
 <!DOCTYPE HTML>
+<!--
+	DonaTrust Portal - Professional Animated Version
+	Integrated by JSZ-Research (Aaron, Linxi, Junkai, Kaius)
+-->
 <html>
 	<head>
 		<title>DonaTrust | Dashboard</title>
@@ -13,16 +17,13 @@
 				backdrop-filter: blur(12px);
 				-webkit-backdrop-filter: blur(12px);
 				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 4em 0;
 			}
-
-			.stat-box h2 {
-				font-weight: 100 !important;
-				text-shadow: 0 0 20px rgba(28, 180, 149, 0.4);
-				letter-spacing: -2px;
-			}
-			.stat-divider {
-				border-left: 1px solid rgba(255, 255, 255, 0.1);
-				padding-left: 2em !important;
+			
+			.spotlight .content {
+				background: rgba(23, 24, 32, 0.8) !important;
+				backdrop-filter: blur(10px);
+				-webkit-backdrop-filter: blur(10px);
 			}
 
 			#two.spotlight.right .content {
@@ -33,6 +34,40 @@
 				width: 100% !important;
 				max-width: 95% !important; 
 			}
+
+			.stat-box {
+				opacity: 0;
+				transform: translateY(30px);
+				transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+				transition-delay: 0.6s;
+			}
+
+			.spotlight:not(.inactive) .stat-box {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			.stat-box h2 {
+				font-weight: 100 !important;
+				text-shadow: 0 0 15px rgba(28, 180, 149, 0.3);
+				display: inline-block;
+				font-size: 3.5em !important;
+				color: #1cb495 !important;
+				margin-bottom: 0 !important;
+			}
+
+			.stat-divider {
+				border-left: 1px solid rgba(255, 255, 255, 0.1);
+				padding-left: 2em !important;
+			}
+
+			.spotlight .content, .wrapper .container {
+				transition: transform 1.2s ease-in-out, opacity 1s ease-in-out !important;
+			}
+			
+			.spotlight.style2.inactive .content { transform: translateX(100%) !important; opacity: 0; }
+			.spotlight.style3.inactive .content { transform: translateX(-100%) !important; opacity: 0; }
+			.spotlight.style1.inactive .content { transform: translateY(100px) !important; opacity: 0; }
 
 			@media screen and (max-width: 1280px) {
 				#two.spotlight.right .content { width: 60% !important; }
@@ -97,11 +132,11 @@
 								</div>
 								<div class="col-5 col-12-medium align-center stat-divider">
 									<div class="stat-box" style="margin-bottom: 2em;">
-										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">34M+</h2>
+										<h2><span class="counter" data-target="34">0</span>M+</h2>
 										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Children with Hearing Loss</p>
 									</div>
 									<div class="stat-box">
-										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">80%</h2>
+										<h2><span class="counter" data-target="80">0</span>%</h2>
 										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Living in Remote Areas</p>
 									</div>
 								</div>
@@ -111,7 +146,7 @@
 					<a href="#two" class="goto-next scrolly">Next</a>
 				</section>
 
-			<!-- Two: Blockchain Ledger + Data (Wide Layout) -->
+			<!-- Two: Blockchain Ledger + Data -->
 				<section id="two" class="spotlight style2 right">
 					<span class="image fit main"><img src="images/pic03.jpg" alt="" /></span>
 					<div class="content">
@@ -129,11 +164,11 @@
 								</div>
 								<div class="col-5 col-12-medium align-center stat-divider">
 									<div class="stat-box" style="margin-bottom: 2em;">
-										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">30%</h2>
+										<h2><span class="counter" data-target="30">0</span>%</h2>
 										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Fund Loss in Old Charity</p>
 									</div>
 									<div class="stat-box">
-										<h2 style="font-size: 3.5em; color: #1cb495; margin-bottom: 0;">0%</h2>
+										<h2><span class="counter" data-target="0">0</span>%</h2>
 										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Intermediary Fee</p>
 									</div>
 								</div>
@@ -160,7 +195,7 @@
 					</div>
 				</section>
 
-			<!-- Footer (Merged CTA & Glassmorphism) -->
+			<!-- Footer -->
 				<footer id="footer">
 					<ul class="actions special">
 						<li><a href="scan.html" class="button primary large">Start Scanning Now</a></li>
@@ -185,13 +220,44 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			
 			<script>
-				// Get name from URL
 				const params = new URLSearchParams(window.location.search);
 				const user = params.get('username');
 				if (user) {
 					document.getElementById('hi-name').innerText = "Hi, " + user + ".";
 				}
+
+				const animateCounter = (el) => {
+					const target = +el.getAttribute('data-target');
+					let current = 0;
+					const increment = target / 40;
+					
+					const updateCount = () => {
+						if (current < target) {
+							current += increment;
+							el.innerText = Math.ceil(current);
+							setTimeout(updateCount, 30);
+						} else {
+							el.innerText = target;
+						}
+					};
+					updateCount();
+				};
+
+				const observerOptions = { threshold: 0.4 };
+				const dataObserver = new IntersectionObserver((entries) => {
+					entries.forEach(entry => {
+						const counters = entry.target.querySelectorAll('.counter');
+						if (entry.isIntersecting) {
+							counters.forEach(c => animateCounter(c));
+						} else {
+							counters.forEach(c => c.innerText = "0");
+						}
+					});
+				}, observerOptions);
+
+				document.querySelectorAll('.spotlight').forEach(s => dataObserver.observe(s));
 			</script>
 
 	</body>
