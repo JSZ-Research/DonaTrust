@@ -33,14 +33,14 @@ By leveraging blockchain technology, we ensure every drop of kindness is transpa
 ---
 
 ## 👥 The Team: JSZ-Research
-We are a team of four passionate developers and researchers dedicated to social good through technological innovation.
+A collaborative research group dedicated to social impact through technology.
 
-| Name | Role | Links |
+| Member | Focus & Expertise | Connectivity |
 | :--- | :--- | :--- |
-| **Aaron (Jiamu) Shangguan** | Lead Developer / Visionary | [LinkedIn](https://www.linkedin.com/in/jiamu-shangguan-464092399/) · [GitHub](https://github.com/mu142857) |
-| **Junkai Zhao** | Blockchain Architect | [LinkedIn](https://www.linkedin.com/in/junkai-zhao-941592396/) · [GitHub](https://github.com/anoyume91) |
-| **Kaius (Kaixuan) Jin** | Technical Researcher | [LinkedIn](https://www.linkedin.com/in/kaixuan-jin/) · [GitHub](https://github.com/KaiusJin) |
-| **Linxi Fan** | UX / Creative Director | [LinkedIn](https://www.linkedin.com/in/linxi-fan/) · [GitHub](https://github.com/linxifan) |
+| **Aaron (Jiamu) Shangguan** | **Digital Experience Architect**<br>Interactive Interface & Web Framework Design | [LinkedIn](https://www.linkedin.com/in/jiamu-shangguan-464092399/) · [GitHub](https://github.com/mu142857) |
+| **Linxi Fan** | **Distributed Ledger Specialist**<br>Blockchain Integration & Backend Logic | [LinkedIn](https://www.linkedin.com/in/linxi-fan/) · [GitHub](https://github.com/linxifan) |
+| **Junkai Zhao** | **System Integrity Strategist**<br>Core Backend Engineering & Data Security | [LinkedIn](https://www.linkedin.com/in/junkai-zhao-941592396/) · [GitHub](https://github.com/anoyume91) |
+| **Kaius (Kaixuan) Jin** | **Global Infrastructure Architect**<br>Systems Visionary & Scalability Research | [LinkedIn](https://www.linkedin.com/in/kaixuan-jin/) · [GitHub](https://github.com/KaiusJin) |
 
 ---
 
