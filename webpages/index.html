@@ -35,15 +35,20 @@
 				color: #1cb495 !important;
 				margin-bottom: 0 !important;
 			}
-			.stat-divider { border-left: 1px solid rgba(255, 255, 255, 0.1); padding-left: 2em !important; }
+			.stat-divider { 
+				border-left: solid 1px rgba(255, 255, 255, 0.3) !important; 
+				padding-left: 2em !important; 
+			}
 			html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 			#banner, .spotlight, #footer { scroll-snap-align: start; scroll-snap-stop: always; }
 
 			.button.btn-blue { background-color: #2563eb !important; color: #fff !important; box-shadow: none !important; }
 			.button.btn-green { background-color: #1cb495 !important; color: #fff !important; box-shadow: none !important; }
 			.button.btn-gray { background-color: #4b5563 !important; color: #fff !important; box-shadow: none !important; }
+			.button.btn-purple { background-color: #a55eea !important; color: #fff !important; box-shadow: none !important; }
+			.button.btn-cyan { background-color: #00cec9 !important; color: #fff !important; box-shadow: none !important; }
 			
-			.button.btn-blue:hover, .button.btn-green:hover, .button.btn-gray:hover {
+			.button.btn-blue:hover, .button.btn-green:hover, .button.btn-gray:hover, .button.btn-purple:hover, .button.btn-cyan:hover {
 				filter: brightness(1.1);
 				transform: scale(1.05);
 			}
@@ -52,14 +57,14 @@
 				background: transparent !important;
 				border: 2px solid !important;
 				height: 2.8em !important;
-				line-height: calc(2.8em - 4px) !important; /* 修正文字垂直居中 */
+				line-height: calc(2.8em - 4px) !important;
 				padding: 0 1.5em !important;
 				font-size: 0.65em !important;
 				font-weight: 700 !important;
 				transition: all 0.3s ease !important;
 			}
 
-			#nav ul li a.button.primary:not(.btn-gray):not(.btn-blue):not(.btn-green) {
+			#nav ul li a.button.primary:not(.btn-gray):not(.btn-blue):not(.btn-green):not(.btn-purple):not(.btn-cyan) {
 				border-color: #e44c65 !important;
 				color: #e44c65 !important;
 			}
@@ -82,6 +87,18 @@
 				background: transparent !important;
 			}
 
+			#nav ul li a.btn-purple {
+				border-color: #a55eea !important;
+				color: #a55eea !important;
+				background: transparent !important;
+			}
+
+			#nav ul li a.btn-cyan {
+				border-color: #00cec9 !important;
+				color: #00cec9 !important;
+				background: transparent !important;
+			}
+
 			#nav ul li a.button:hover {
 				background: rgba(255, 255, 255, 0.1) !important;
 				border-color: #fff !important;
@@ -90,6 +107,47 @@
 
 			#nav ul li a:not(.button) {
 				line-height: 2.8em !important;
+			}
+
+			/* ============================================
+			   紫色板块 (#one-b) 修复
+			   ============================================ */
+			#one-b .content {
+				width: 50% !important;
+				border-left-color: #a55eea !important;
+			}
+			
+			#one-b .stat-box h2 {
+				color: #1cb495 !important;
+				text-shadow: 0 0 15px rgba(165, 94, 234, 0.4) !important;
+			}
+
+			/* ============================================
+			   青色板块 (#two-b) 修复
+			   ============================================ */
+			#two-b .content {
+				border-top-color: #00cec9 !important;
+				border-left: none !important;
+				transition: transform 1.2s ease-in-out, opacity 1.2s ease-in-out;
+			}
+			
+			#two-b .stat-box h2 {
+				color: #1cb495 !important;
+				text-shadow: 0 0 15px rgba(0, 206, 201, 0.4) !important;
+			}
+
+			/* 青色板块从下往上升入场动画 */
+			#two-b.inactive .content {
+				transform: translateY(100vh) !important;
+				opacity: 0;
+			}
+
+			/* 移动端适配：980px以下宽度恢复为100% */
+			@media screen and (max-width: 980px) {
+				#one-b .content,
+				#two-b .content {
+					width: 100% !important;
+				}
 			}
 		</style>
 
@@ -103,10 +161,11 @@
 					<nav id="nav">
 						<ul>
 							<li><a href="../index.html">Home</a></li>
-							<li><a href="../tranlator/templates/index.html" class="button primary external-link">Launch Scanner</a></li>
-							<li><a href="../tranlator/templates/index.html" class="button primary external-link btn-gray">EchoTrans</a></li>
-							<li><a href="./flowchart.html" class="button primary external-link btn-blue">View Live Ledger</a></li>
-							<li><a href="./ledger.html" class="button primary external-link btn-green">Blockchain Ledger</a></li>
+							<li><a href="../tranlator/templates/index.html" class="button primary external-link">Scanner</a></li>
+							<li><a href="#" class="button primary external-link btn-purple">Video Translate</a></li>
+							<li><a href="./flowchart.html" class="button primary external-link btn-blue">Live Ledger</a></li>
+							<li><a href="#" class="button primary external-link btn-cyan">How it Works</a></li>
+							<li><a href="./ledger.html" class="button primary external-link btn-green">Ledger</a></li>
 						</ul>
 					</nav>
 				</header>
@@ -159,6 +218,34 @@
 					<a href="#two" class="goto-next scrolly">Next</a>
 				</section>
 
+			<!-- One-B: Video Translation (Purple) - Focus on Humanities -->
+				<section id="one-b" class="spotlight style2 left">
+					<span class="image fit main"><img src="images/pic05.jpg" alt="Humanitarian AI" /></span>
+					<div class="content">
+						<div class="container">
+							<div class="row aln-middle">
+								<div class="col-7 col-12-medium">
+									<header>
+										<h2 style="color: #a55eea;">EchoTrans Video AI</h2>
+										<p>Bridging Knowledge for All</p>
+									</header>
+									<p>Education shouldn't have a language barrier. Our AI translates global courses from English to French and local dialects, helping students in remote African regions access life-changing knowledge. <strong>We don't just translate words; we deliver hope.</strong></p>
+									<ul class="actions">
+										<li><a href="#" class="button primary btn-purple">Watch Impact</a></li>
+									</ul>
+								</div>
+								<div class="col-5 col-12-medium align-center stat-divider">
+									<div class="stat-box">
+										<h2><span class="counter" data-target="12">0</span>k+</h2>
+										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Students Benefited</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<a href="#two" class="goto-next scrolly">Next</a>
+				</section>
+
 			<!-- Two: Blockchain Ledger + Data -->
 				<section id="two" class="spotlight style2 right">
 					<span class="image fit main"><img src="images/pic03.jpg" alt="" /></span>
@@ -190,6 +277,34 @@
 					</div>
 					<a href="#three" class="goto-next scrolly">Next</a>
 				</section>
+
+			<!-- Two-B: Blockchain Animation (Cyan) - Pull down animation -->
+			<section id="two-b" class="spotlight style1 top">
+				<div class="content">
+					<div class="container">
+						<div class="row aln-middle">
+							<div class="col-7 col-12-medium">
+								<header>
+									<h2 style="color: #00cec9;">Visualizing the Chain</h2>
+									<p>Transparency from the Cloud to the Ledger</p>
+								</header>
+								<p>How do we guarantee your donation reaches its destination? Our interactive animation visualizes the Solana node verification process. See how data packets are hashed and secured in real-time, creating an unbreakable bond of trust.</p>
+								<ul class="actions">
+									<li><a href="#" class="button primary btn-cyan">View Animation</a></li>
+								</ul>
+							</div>
+							<div class="col-5 col-12-medium align-center stat-divider">
+								<div class="stat-box">
+									<h2><span class="counter" data-target="400">0</span>ms</h2>
+									<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Block Finality</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<span class="image fit main bottom"><img src="images/pic06.jpg" alt="Solana Tech" /></span>
+				<a href="#three" class="goto-next scrolly">Next</a>
+			</section>
 
 			<!-- Three: Inspiration (Final Concept) -->
 				<section id="three" class="spotlight style3 left">
