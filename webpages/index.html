@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" type="image/png" href="images/favicon.png"/>
-		<style>
+<style>
 			#footer {
 				background: rgba(28, 29, 38, 0.7) !important;
 				backdrop-filter: blur(12px);
@@ -25,22 +25,7 @@
 				-webkit-backdrop-filter: blur(10px);
 			}
 			#two.spotlight.right .content {
-				width: 50% !important; 
-				padding: 6em 4em !important; 
-			}
-			#two.spotlight.right .content .container {
-				width: 100% !important;
-				max-width: 95% !important; 
-			}
-			.stat-box {
-				opacity: 0;
-				transform: translateY(30px);
-				transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-				transition-delay: 0.6s;
-			}
-			.spotlight:not(.inactive) .stat-box {
-				opacity: 1;
-				transform: translateY(0);
+				width: 50% !important; padding: 6em 4em !important; 
 			}
 			.stat-box h2 {
 				font-weight: 100 !important;
@@ -50,96 +35,61 @@
 				color: #1cb495 !important;
 				margin-bottom: 0 !important;
 			}
-			.stat-divider {
-				border-left: 1px solid rgba(255, 255, 255, 0.1);
-				padding-left: 2em !important;
-			}
-			.spotlight .content, .wrapper .container {
-				transition: transform 1.2s ease-in-out, opacity 1s ease-in-out !important;
-			}
-			.spotlight.style2.inactive .content { transform: translateX(100%) !important; opacity: 0; }
-			.spotlight.style3.inactive .content { transform: translateX(-100%) !important; opacity: 0; }
-			.spotlight.style1.inactive .content { transform: translateY(100px) !important; opacity: 0; }
+			.stat-divider { border-left: 1px solid rgba(255, 255, 255, 0.1); padding-left: 2em !important; }
+			html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+			#banner, .spotlight, #footer { scroll-snap-align: start; scroll-snap-stop: always; }
 
-			@media screen and (max-width: 980px) {
-				#two.spotlight.right .content { width: 100% !important; }
-				.stat-divider {
-					border-left: 0 !important;
-					border-top: 1px solid rgba(255, 255, 255, 0.1);
-					margin-top: 2em;
-					padding-top: 2em !important;
-					padding-left: 0 !important;
-				}
+			.button.btn-blue { background-color: #2563eb !important; color: #fff !important; box-shadow: none !important; }
+			.button.btn-green { background-color: #1cb495 !important; color: #fff !important; box-shadow: none !important; }
+			.button.btn-gray { background-color: #4b5563 !important; color: #fff !important; box-shadow: none !important; }
+			
+			.button.btn-blue:hover, .button.btn-green:hover, .button.btn-gray:hover {
+				filter: brightness(1.1);
+				transform: scale(1.05);
 			}
-			html {
-				scroll-snap-type: y mandatory;
-				scroll-behavior: smooth;
-			}
-			#banner, .spotlight, #footer {
-				scroll-snap-align: start;
-				scroll-snap-stop: always;
-			}
-			#footer { scroll-snap-align: end; }
 
 			#nav ul li a.button {
 				background: transparent !important;
 				border: 2px solid !important;
-				border-radius: 6px !important;
 				height: 2.8em !important;
-				line-height: 2.8em !important;
+				line-height: calc(2.8em - 4px) !important; /* 修正文字垂直居中 */
 				padding: 0 1.5em !important;
-				display: inline-block !important;
-				text-decoration: none !important;
 				font-size: 0.65em !important;
 				font-weight: 700 !important;
-				letter-spacing: 0.15em !important;
 				transition: all 0.3s ease !important;
-				margin-top: -0.5em;
 			}
 
 			#nav ul li a.button.primary:not(.btn-gray):not(.btn-blue):not(.btn-green) {
 				border-color: #e44c65 !important;
 				color: #e44c65 !important;
 			}
-			#nav ul li a.button.primary:not(.btn-gray):not(.btn-blue):not(.btn-green):hover {
-				background: rgba(228, 76, 101, 0.1) !important;
-				color: #fff !important;
-				border-color: #fff !important;
-			}
 
 			#nav ul li a.btn-gray {
 				border-color: #888888 !important;
 				color: #888888 !important;
-			}
-			#nav ul li a.btn-gray:hover {
-				background: rgba(136, 136, 136, 0.1) !important;
-				color: #fff !important;
-				border-color: #fff !important;
+				background: transparent !important;
 			}
 
 			#nav ul li a.btn-blue {
 				border-color: #2563eb !important;
 				color: #2563eb !important;
-			}
-			#nav ul li a.btn-blue:hover {
-				background: rgba(37, 99, 235, 0.1) !important;
-				color: #fff !important;
-				border-color: #fff !important;
+				background: transparent !important;
 			}
 
 			#nav ul li a.btn-green {
 				border-color: #1cb495 !important;
 				color: #1cb495 !important;
+				background: transparent !important;
 			}
-			#nav ul li a.btn-green:hover {
-				background: rgba(28, 180, 149, 0.1) !important;
-				color: #fff !important;
+
+			#nav ul li a.button:hover {
+				background: rgba(255, 255, 255, 0.1) !important;
 				border-color: #fff !important;
+				color: #fff !important;
 			}
 
 			#nav ul li a:not(.button) {
 				line-height: 2.8em !important;
-				display: inline-block !important;
 			}
 		</style>
 
