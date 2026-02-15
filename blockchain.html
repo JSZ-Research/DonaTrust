@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Industrial Foundry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+
+        #canvas {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .label {
+            fill: #e0e0e0;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hash-text {
+            fill: #ff9900;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info-text {
+            fill: #00ffaa;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+        }
+
+        
+        .particle {
+            fill: #ff9900;
+            opacity: 0.6;
+        }
+
+        .particle-cyan {
+            fill: #00ffaa;
+            opacity: 0.6;
+        }
+
+        .connection-line {
+            stroke: #ff9900;
+            stroke-width: 0.5;
+            opacity: 0.3;
+        }
+
+        .connection-line-cyan {
+            stroke: #00ffaa;
+            stroke-width: 0.5;
+            opacity: 0.3;
+        }
+
+        
+        .glow-orange {
+            filter: drop-shadow(0 0 8px #ff9900);
+        }
+
+        .glow-cyan {
+            filter: drop-shadow(0 0 8px #00ffaa);
+        }
+
+        .structure {
+            stroke: #e0e0e0;
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: square;
+            stroke-linejoin: miter;
+        }
+
+        .pipe {
+            stroke: #444;
+            stroke-width: 6;
+            fill: none;
+            stroke-linecap: square;
+        }
+
+        
+        .info-box {
+            stroke: #ff9900;
+            stroke-width: 2;
+            fill: rgba(10, 10, 10, 0.85);
+            rx: 5;
+        }
+
+        .info-box-cyan {
+            stroke: #00ffaa;
+            stroke-width: 2;
+            fill: rgba(10, 10, 10, 0.85);
+            rx: 5;
+        }
+
+        
+        @keyframes particleFloat {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes vibrate {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 1px); }
+            50% { transform: translate(2px, -1px); }
+            75% { transform: translate(-1px, -2px); }
+        }
+
+        @keyframes stampDown {
+            0% { transform: translateY(-100px); }
+            70% { transform: translateY(0); }
+            85% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px #ff9900); }
+            50% { filter: drop-shadow(0 0 20px #ff9900); }
+        }
+
+        @keyframes scanline {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100%); }
+        }
+
+        @keyframes drawLine {
+            from { stroke-dashoffset: 1000; }
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+    <svg id="canvas" viewBox="0 0 1400 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            
+            <radialGradient id="glowGradientOrange">
+                <stop offset="0%" style="stop-color:#ff9900;stop-opacity:0.8" />
+                <stop offset="100%" style="stop-color:#ff9900;stop-opacity:0" />
+            </radialGradient>
+            
+            <radialGradient id="glowGradientCyan">
+                <stop offset="0%" style="stop-color:#00ffaa;stop-opacity:0.8" />
+                <stop offset="100%" style="stop-color:#00ffaa;stop-opacity:0" />
+            </radialGradient>
+
+            <linearGradient id="metalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#4a4a4a;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#666;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#3a3a3a;stop-opacity:1" />
+            </linearGradient>
+
+            
+            <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+
+        
+        <g id="networkOrigin" opacity="0">
+            
+            <circle class="particle" cx="120" cy="320" r="1.5">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="180" cy="280" r="1">
+                <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="240" cy="350" r="1.2">
+                <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="150" cy="380" r="0.8">
+                <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="200" cy="340" r="1.5">
+                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="160" cy="420" r="1">
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.7s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="220" cy="300" r="1.3">
+                <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.3s" repeatCount="indefinite"/>
+            </circle>
+            
+            
+            <line class="connection-line" x1="120" y1="320" x2="180" y2="280"/>
+            <line class="connection-line" x1="180" y1="280" x2="240" y2="350"/>
+            <line class="connection-line" x1="240" y1="350" x2="200" y2="340"/>
+            <line class="connection-line" x1="120" y1="320" x2="150" y2="380"/>
+            <line class="connection-line" x1="150" y1="380" x2="160" y2="420"/>
+            <line class="connection-line" x1="200" y1="340" x2="220" y2="300"/>
+            <line class="connection-line" x1="180" y1="280" x2="220" y2="300"/>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="1s" dur="1s" fill="freeze"/>
+        </g>
+
+       
+        <g id="networkCenter" opacity="0">
+            
+            <circle class="particle" cx="580" cy="320" r="1.2">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="620" cy="280" r="1.5">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="660" cy="320" r="1">
+                <animate attributeName="opacity" values="0.5;0.7;0.5" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="600" cy="360" r="1.3">
+                <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="640" cy="340" r="0.8">
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.7s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="590" cy="390" r="1.2">
+                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.3s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="650" cy="370" r="1">
+                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            
+           
+            <line class="connection-line" x1="580" y1="320" x2="620" y2="280"/>
+            <line class="connection-line" x1="620" y1="280" x2="660" y2="320"/>
+            <line class="connection-line" x1="660" y1="320" x2="650" y2="370"/>
+            <line class="connection-line" x1="580" y1="320" x2="600" y2="360"/>
+            <line class="connection-line" x1="600" y1="360" x2="590" y2="390"/>
+            <line class="connection-line" x1="640" y1="340" x2="660" y2="320"/>
+            <line class="connection-line" x1="600" y1="360" x2="640" y2="340"/>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="4s" dur="1s" fill="freeze"/>
+        </g>
+
+        
+        <g id="networkVault" opacity="0">
+            <circle class="particle" cx="350" cy="480" r="1.2">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="400" cy="520" r="1">
+                <animate attributeName="opacity" values="0.4;0.7;0.4" dur="2.7s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="420" cy="560" r="1.5">
+                <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="380" cy="540" r="0.8">
+                <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle" cx="320" cy="510" r="1.3">
+                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.3s" repeatCount="indefinite"/>
+            </circle>
+            
+           
+            <line class="connection-line" x1="350" y1="480" x2="400" y2="520"/>
+            <line class="connection-line" x1="400" y1="520" x2="420" y2="560"/>
+            <line class="connection-line" x1="420" y1="560" x2="380" y2="540"/>
+            <line class="connection-line" x1="350" y1="480" x2="320" y2="510"/>
+            <line class="connection-line" x1="320" y1="510" x2="380" y2="540"/>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="9s" dur="1s" fill="freeze"/>
+        </g>
+
+        
+        <g id="networkLedger" opacity="0">
+            <circle class="particle-cyan" cx="900" cy="200" r="1.2">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle-cyan" cx="950" cy="240" r="1.5">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle-cyan" cx="1000" cy="220" r="1">
+                <animate attributeName="opacity" values="0.5;0.7;0.5" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle-cyan" cx="920" cy="280" r="1.3">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle-cyan" cx="980" cy="260" r="0.8">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.7s" repeatCount="indefinite"/>
+            </circle>
+            <circle class="particle-cyan" cx="860" cy="230" r="1.2">
+                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.3s" repeatCount="indefinite"/>
+            </circle>
+            
+            
+            <line class="connection-line-cyan" x1="900" y1="200" x2="950" y2="240"/>
+            <line class="connection-line-cyan" x1="950" y1="240" x2="1000" y2="220"/>
+            <line class="connection-line-cyan" x1="950" y1="240" x2="920" y2="280"/>
+            <line class="connection-line-cyan" x1="900" y1="200" x2="860" y2="230"/>
+            <line class="connection-line-cyan" x1="920" y1="280" x2="980" y2="260"/>
+            <line class="connection-line-cyan" x1="1000" y1="220" x2="980" y2="260"/>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="9s" dur="1s" fill="freeze"/>
+        </g>
+
+        
+        <g id="workbench" opacity="0">
+            
+            <path class="structure" d="M 100,450 L 200,400 L 200,300 L 100,350 Z" fill="#1a1a1a" stroke-width="2"/>
+            <path class="structure" d="M 200,400 L 300,450 L 300,350 L 200,300 Z" fill="#252525" stroke-width="2"/>
+            <path class="structure" d="M 100,450 L 300,450 L 300,350 L 100,350 Z" fill="#151515" stroke-width="2"/>
+            
+            
+            <path d="M 120,420 L 180,390 L 180,330 L 120,360 Z" fill="#2a2a2a" stroke="#ff9900" stroke-width="2"/>
+            <path d="M 180,390 L 240,420 L 240,360 L 180,330 Z" fill="#353535" stroke="#ff9900" stroke-width="2"/>
+            <path d="M 120,420 L 240,420 L 240,360 L 120,360 Z" fill="#1f1f1f" stroke="#ff9900" stroke-width="2"/>
+            
+           
+            <circle cx="125" cy="365" r="3" fill="#ff9900"/>
+            <circle cx="235" cy="365" r="3" fill="#ff9900"/>
+            <circle cx="125" cy="415" r="3" fill="#ff9900"/>
+            <circle cx="235" cy="415" r="3" fill="#ff9900"/>
+
+            
+            <rect class="info-box" x="90" y="470" width="210" height="60" opacity="0">
+                <animate attributeName="opacity" from="0" to="1" begin="2s" dur="0.5s" fill="freeze"/>
+            </rect>
+            <text x="110" y="495" class="label" font-size="11" fill="#ff9900" opacity="0">
+                SECURE NODE // ORIGIN
+                <animate attributeName="opacity" from="0" to="1" begin="2.2s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="110" y="512" class="info-text" opacity="0">
+                ID: User_D458$%&@
+                <animate attributeName="opacity" from="0" to="1" begin="2.4s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="110" y="525" class="info-text" opacity="0">
+                IP: 192.168.*.*.209
+                <animate attributeName="opacity" from="0" to="1" begin="2.6s" dur="0.3s" fill="freeze"/>
+            </text>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.3s" fill="freeze"/>
+        </g>
+
+        
+        <animateTransform 
+            xlink:href="#workbench"
+            attributeName="transform"
+            type="translate"
+            values="0,0; -2,1; 2,-1; -1,-2; 0,0"
+            dur="0.2s"
+            begin="2s"
+            repeatCount="5"/>
+
+        
+        <g id="dataBlock" opacity="0">
+            <rect x="165" y="365" width="30" height="30" fill="#ff9900" stroke="#e0e0e0" stroke-width="2"/>
+            <circle cx="180" cy="380" r="25" fill="url(#glowGradientOrange)">
+                <animate attributeName="r" values="25;35;25" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <animate attributeName="opacity" from="0" to="1" begin="3s" dur="0.2s" fill="freeze"/>
+        </g>
+
+        
+        <path id="conveyorPath1" d="M 200,380 L 580,380" fill="none"/>
+
+        
+        <line class="pipe" x1="250" y1="380" x2="550" y2="380" stroke-dasharray="1000" stroke-dashoffset="1000" opacity="0">
+            <animate attributeName="stroke-dashoffset" from="1000" to="0" begin="3.5s" dur="1s" fill="freeze"/>
+            <animate attributeName="opacity" from="0" to="1" begin="3.5s" dur="0.1s" fill="freeze"/>
+        </line>
+
+        
+        <g id="movingBlock" opacity="0">
+            <circle cx="0" cy="0" r="20" fill="none" stroke="#ff9900" stroke-width="1.5" opacity="0.4">
+                <animateMotion begin="4.5s" dur="2s" fill="freeze">
+                    <mpath xlink:href="#conveyorPath1"/>
+                </animateMotion>
+                <animate attributeName="r" values="20;30;20" dur="1s" begin="4.5s" repeatCount="2"/>
+            </circle>
+            <rect x="-15" y="-15" width="30" height="30" fill="#ff9900" stroke="#e0e0e0" stroke-width="2">
+                <animateMotion begin="4.5s" dur="2s" fill="freeze">
+                    <mpath xlink:href="#conveyorPath1"/>
+                </animateMotion>
+            </rect>
+            <animate attributeName="opacity" from="0" to="1" begin="4.5s" dur="0.1s" fill="freeze"/>
+        </g>
+
+        
+        <g id="monument" opacity="0">
+           
+            <path d="M 540,430 L 620,390 L 620,370 L 540,410 Z" fill="#1a1a1a" stroke="#e0e0e0" stroke-width="2"/>
+            <path d="M 620,390 L 700,430 L 700,410 L 620,370 Z" fill="#252525" stroke="#e0e0e0" stroke-width="2"/>
+            <path d="M 540,430 L 700,430 L 700,410 L 540,410 Z" fill="#151515" stroke="#e0e0e0" stroke-width="2"/>
+            
+           
+            <path d="M 575,410 L 620,385 L 620,180 L 575,205 Z" fill="#2a2a2a" stroke="#ff9900" stroke-width="3"/>
+            <path d="M 620,385 L 665,410 L 665,205 L 620,180 Z" fill="#353535" stroke="#ff9900" stroke-width="3"/>
+            <path d="M 575,410 L 665,410 L 665,205 L 575,205 Z" fill="#1f1f1f" stroke="#ff9900" stroke-width="3"/>
+            
+            
+            <rect x="580" y="240" width="80" height="6" fill="#ff9900" opacity="0.6"/>
+            <rect x="580" y="340" width="80" height="6" fill="#ff9900" opacity="0.6"/>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="4s" dur="0.3s" fill="freeze"/>
+        </g>
+
+       
+        <g id="stampHead" opacity="0">
+            
+            <path d="M 590,100 L 630,75 L 630,45 L 590,70 Z" fill="#353535" stroke="#e0e0e0" stroke-width="2"/>
+            <path d="M 630,75 L 670,100 L 670,70 L 630,45 Z" fill="#404040" stroke="#e0e0e0" stroke-width="2"/>
+            <path d="M 590,100 L 670,100 L 670,70 L 590,70 Z" fill="#2a2a2a" stroke="#e0e0e0" stroke-width="2"/>
+            
+           
+            <rect x="625" y="100" width="10" height="170" fill="url(#metalGradient)" stroke="#666" stroke-width="2"/>
+            
+            
+            <circle cx="605" cy="85" r="4" fill="#ff0000">
+                <animate attributeName="opacity" values="1;0.3;1" dur="0.5s" begin="6.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="655" cy="85" r="4" fill="#ff0000">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="0.5s" begin="6.5s" repeatCount="indefinite"/>
+            </circle>
+
+            <animate attributeName="opacity" from="0" to="1" begin="6s" dur="0.2s" fill="freeze"/>
+            
+            
+            <animateTransform 
+                attributeName="transform"
+                type="translate"
+                values="0,-150; 0,0; 0,-8; 0,0"
+                keyTimes="0; 0.7; 0.85; 1"
+                dur="1.5s"
+                begin="6.5s"
+                fill="freeze"/>
+        </g>
+
+        
+        <g id="hashImprint" opacity="0">
+            
+            <text x="595" y="260" class="hash-text" font-size="12">Tx:8f4a2b</text>
+            <path d="M 590,265 L 655,265" stroke="#ff9900" stroke-width="2"/>
+            
+            <text x="595" y="285" class="hash-text" font-size="11">Block:729</text>
+            <path d="M 590,290 L 655,290" stroke="#ff9900" stroke-width="1.5" opacity="0.8"/>
+            
+            <text x="595" y="305" class="hash-text" font-size="10">Time:1708</text>
+            
+            <text x="595" y="322" class="hash-text" font-size="10">Nonce:45</text>
+            
+            <text x="595" y="340" class="hash-text" font-size="9">Prev:0x7e9</text>
+            <path d="M 590,344 L 655,344" stroke="#ff9900" stroke-width="1" opacity="0.6"/>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="7.8s" dur="0.2s" fill="freeze"/>
+        </g>
+
+        
+        <g id="impact" opacity="0">
+            <circle cx="620" cy="300" r="5" fill="none" stroke="#ff9900" stroke-width="3">
+                <animate attributeName="r" from="5" to="60" begin="7.8s" dur="0.5s" fill="freeze"/>
+                <animate attributeName="opacity" from="1" to="0" begin="7.8s" dur="0.5s" fill="freeze"/>
+            </circle>
+            <circle cx="620" cy="300" r="5" fill="none" stroke="#00ffaa" stroke-width="2">
+                <animate attributeName="r" from="5" to="80" begin="7.9s" dur="0.6s" fill="freeze"/>
+                <animate attributeName="opacity" from="0.6" to="0" begin="7.9s" dur="0.6s" fill="freeze"/>
+            </circle>
+            <circle cx="620" cy="300" r="40" fill="#ff9900" opacity="0">
+                <animate attributeName="opacity" values="0;0.4;0" keyTimes="0;0.3;1" begin="7.8s" dur="0.3s" fill="freeze"/>
+            </circle>
+        </g>
+
+       
+        <path id="pipeToVault" d="M 570,410 Q 480,460 420,540" fill="none"/>
+        <path id="pipeToLedger" d="M 670,410 Q 780,330 900,260" fill="none"/>
+
+        
+        <g id="pipeLeft" opacity="0">
+            <path class="pipe" d="M 570,410 Q 480,460 420,540" stroke="#ff9900" stroke-width="4" stroke-dasharray="1000" stroke-dashoffset="1000">
+                <animate attributeName="stroke-dashoffset" from="1000" to="0" begin="8.5s" dur="1s" fill="freeze"/>
+            </path>
+            
+            <circle cx="0" cy="0" r="6" fill="#ff9900" opacity="0">
+                <animateMotion begin="9.5s" dur="1.2s" repeatCount="2" path="M 570,410 Q 480,460 420,540"/>
+                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" begin="9.5s" dur="1.2s" repeatCount="2"/>
+            </circle>
+            <animate attributeName="opacity" from="0" to="1" begin="8.5s" dur="0.1s" fill="freeze"/>
+        </g>
+
+        <g id="pipeRight" opacity="0">
+            <path class="pipe" d="M 670,410 Q 780,330 900,260" stroke="#00ffaa" stroke-width="4" stroke-dasharray="1000" stroke-dashoffset="1000">
+                <animate attributeName="stroke-dashoffset" from="1000" to="0" begin="8.5s" dur="1s" fill="freeze"/>
+            </path>
+            
+            <circle cx="0" cy="0" r="6" fill="#00ffaa" opacity="0">
+                <animateMotion begin="9.5s" dur="1.2s" repeatCount="2" path="M 670,410 Q 780,330 900,260"/>
+                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" begin="9.5s" dur="1.2s" repeatCount="2"/>
+            </circle>
+            <animate attributeName="opacity" from="0" to="1" begin="8.5s" dur="0.1s" fill="freeze"/>
+        </g>
+
+       
+        <g id="vault" opacity="0">
+            
+            <path d="M 300,590 L 380,550 L 380,510 L 300,550 Z" fill="#1a1a1a" stroke="#ff9900" stroke-width="3"/>
+            <path d="M 380,550 L 460,590 L 460,550 L 380,510 Z" fill="#252525" stroke="#ff9900" stroke-width="3"/>
+            <path d="M 300,590 L 460,590 L 460,550 L 300,550 Z" fill="#151515" stroke="#ff9900" stroke-width="3"/>
+            
+            
+            <g id="vaultDoor">
+                <path d="M 330,575 L 375,550 L 375,520 L 330,545 Z" fill="#2a2a2a" stroke="#e0e0e0" stroke-width="2"/>
+                
+                <circle cx="352" cy="545" r="12" fill="#353535" stroke="#ff9900" stroke-width="2"/>
+                <line x1="352" y1="545" x2="352" y2="533" stroke="#ff9900" stroke-width="2"/>
+                <line x1="352" y1="545" x2="364" y2="545" stroke="#ff9900" stroke-width="2"/>
+                
+                <animateTransform 
+                    attributeName="transform"
+                    type="skewY"
+                    from="0"
+                    to="-30"
+                    dur="0.8s"
+                    begin="10s"
+                    fill="freeze"/>
+            </g>
+            
+            
+            <g id="lockIcon" opacity="0">
+                <path d="M 350,560 L 365,552 L 365,542 L 350,550 Z" fill="#ff9900" stroke="#e0e0e0" stroke-width="2"/>
+                <path d="M 365,552 L 380,560 L 380,550 L 365,542 Z" fill="#cc7700" stroke="#e0e0e0" stroke-width="2"/>
+                <path d="M 350,560 L 380,560 L 380,550 L 350,550 Z" fill="#aa6600" stroke="#e0e0e0" stroke-width="2"/>
+                <path d="M 355,550 L 355,538 Q 365,532 375,538 L 375,550" fill="none" stroke="#ff9900" stroke-width="2"/>
+                <circle cx="365" cy="555" r="2" fill="#0a0a0a"/>
+                <circle cx="365" cy="553" r="15" fill="url(#glowGradientOrange)" opacity="0">
+                    <animate attributeName="opacity" values="0;0.6;0.3" keyTimes="0;0.5;1" begin="11s" dur="0.8s" fill="freeze"/>
+                </circle>
+                <animate attributeName="opacity" from="0" to="1" begin="11s" dur="0.3s" fill="freeze"/>
+            </g>
+
+            
+            <rect class="info-box" x="270" y="610" width="220" height="60" opacity="0">
+                <animate attributeName="opacity" from="0" to="1" begin="10.5s" dur="0.5s" fill="freeze"/>
+            </rect>
+            <text x="290" y="635" class="label" font-size="11" fill="#ff9900" opacity="0">
+                SECURE NODE // VAULT
+                <animate attributeName="opacity" from="0" to="1" begin="10.7s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="290" y="652" class="info-text" opacity="0">
+                IDENTITY - SEALED
+                <animate attributeName="opacity" from="0" to="1" begin="10.9s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="290" y="665" class="info-text" opacity="0">
+                [ ENCRYPTED ]
+                <animate attributeName="opacity" from="0" to="1" begin="11.1s" dur="0.3s" fill="freeze"/>
+            </text>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="9.5s" dur="0.3s" fill="freeze"/>
+        </g>
+
+        
+        <animateTransform 
+            xlink:href="#vaultDoor"
+            attributeName="transform"
+            type="rotate"
+            from="0 352 545"
+            to="180 352 545"
+            additive="sum"
+            dur="0.8s"
+            begin="10.8s"
+            fill="freeze"/>
+
+       
+        <g id="displayCase" opacity="0">
+            
+            <path d="M 870,280 L 950,240 L 950,160 L 870,200 Z" fill="rgba(30, 30, 30, 0.5)" stroke="#00ffaa" stroke-width="3"/>
+            <path d="M 950,240 L 1030,280 L 1030,200 L 950,160 Z" fill="rgba(35, 35, 35, 0.5)" stroke="#00ffaa" stroke-width="3"/>
+            <path d="M 870,280 L 1030,280 L 1030,200 L 870,200 Z" fill="rgba(25, 25, 25, 0.4)" stroke="#00ffaa" stroke-width="3"/>
+            
+            
+            <rect x="870" y="160" width="160" height="2" fill="#00ffaa" opacity="0">
+                <animate attributeName="y" from="160" to="280" begin="10.5s" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;0.6;0" keyTimes="0;0.5;1" begin="10.5s" dur="2s" repeatCount="indefinite"/>
+            </rect>
+            
+            
+            <rect x="930" y="250" width="40" height="20" fill="#2a2a2a" stroke="#00ffaa" stroke-width="2"/>
+            
+            
+            <g id="displayRecord" opacity="0">
+                <rect x="935" y="235" width="30" height="20" fill="#ff9900" stroke="#e0e0e0" stroke-width="2"/>
+                <text x="940" y="248" class="hash-text" font-size="9">8f..a2</text>
+                <animate attributeName="opacity" from="0" to="1" begin="10.5s" dur="0.2s" fill="freeze"/>
+            </g>
+            
+            
+            <circle cx="890" cy="180" r="30" fill="url(#glowGradientCyan)" opacity="0">
+                <animate attributeName="opacity" values="0;0.6;0.3;0.6" dur="2s" begin="10.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="1010" cy="180" r="30" fill="url(#glowGradientCyan)" opacity="0">
+                <animate attributeName="opacity" values="0;0.3;0.6;0.3" dur="2s" begin="10.5s" repeatCount="indefinite"/>
+            </circle>
+
+            
+            <rect class="info-box-cyan" x="840" y="300" width="220" height="60" opacity="0">
+                <animate attributeName="opacity" from="0" to="1" begin="10.5s" dur="0.5s" fill="freeze"/>
+            </rect>
+            <text x="860" y="325" class="label" font-size="11" fill="#00ffaa" opacity="0">
+                SECURE NODE // DESTINATION
+                <animate attributeName="opacity" from="0" to="1" begin="10.7s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="860" y="342" class="info-text" fill="#00ffaa" opacity="0">
+                STATUS: ACTION RECORDED
+                <animate attributeName="opacity" from="0" to="1" begin="10.9s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="860" y="355" class="info-text" fill="#00ffaa" opacity="0">
+                [ ENCRYPTED ]
+                <animate attributeName="opacity" from="0" to="1" begin="11.1s" dur="0.3s" fill="freeze"/>
+            </text>
+            
+            <animate attributeName="opacity" from="0" to="1" begin="9.5s" dur="0.3s" fill="freeze"/>
+        </g>
+
+        
+        <g id="title" opacity="0">
+            <text x="50" y="70" class="label" font-size="28" fill="#ff9900" letter-spacing="4">BLOCKCHAIN</text>
+            <text x="50" y="100" class="label" font-size="18" fill="#00ffaa" opacity="0.7" letter-spacing="6">INDUSTRIAL FOUNDRY</text>
+            <line x1="50" y1="110" x2="480" y2="110" stroke="#ff9900" stroke-width="2" opacity="0.3"/>
+            <line x1="50" y1="113" x2="380" y2="113" stroke="#00ffaa" stroke-width="1" opacity="0.4"/>
+            <animate attributeName="opacity" from="0" to="1" begin="0s" dur="1s" fill="freeze"/>
+        </g>
+
+       
+        <g id="processLabels">
+            <text x="160" y="290" class="label" font-size="10" fill="#ff9900" opacity="0">
+                ① CRAFTING
+                <animate attributeName="opacity" from="0" to="1" begin="2s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="590" y="470" class="label" font-size="10" fill="#ff9900" opacity="0">
+                ② CASTING
+                <animate attributeName="opacity" from="0" to="1" begin="6.5s" dur="0.3s" fill="freeze"/>
+            </text>
+            <text x="600" y="445" class="label" font-size="10" fill="#00ffaa" opacity="0">
+                ③ DIVERGENCE
+                <animate attributeName="opacity" from="0" to="1" begin="8.5s" dur="0.3s" fill="freeze"/>
+            </text>
+        </g>
+
+        
+        <g id="restartHint" opacity="0">
+            <text x="700" y="750" class="label" font-size="12" fill="#444" text-anchor="middle">
+                ⟲ CYCLE REPEATS
+                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="3s" begin="12s" fill="freeze"/>
+            </text>
+        </g>
+    </svg>
+
+    <script>
+        setTimeout(() => {
+            location.reload();
+        }, 18000);
+    </script>
+</body>
+</html>
