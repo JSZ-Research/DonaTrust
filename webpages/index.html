@@ -46,7 +46,7 @@
 			.button.btn-green { background-color: #1cb495 !important; color: #fff !important; box-shadow: none !important; }
 			.button.btn-gray { background-color: #4b5563 !important; color: #fff !important; box-shadow: none !important; }
 			.button.btn-purple { background-color: #a55eea !important; color: #fff !important; box-shadow: none !important; }
-			.button.btn-cyan { background-color: #00cec9 !important; color: #fff !important; box-shadow: none !important; }
+			.button.btn-cyan { background-color: #35cee9 !important; color: #fff !important; box-shadow: none !important; }
 			
 			.button.btn-blue:hover, .button.btn-green:hover, .button.btn-gray:hover, .button.btn-purple:hover, .button.btn-cyan:hover {
 				filter: brightness(1.1);
@@ -94,8 +94,8 @@
 			}
 
 			#nav ul li a.btn-cyan {
-				border-color: #00cec9 !important;
-				color: #00cec9 !important;
+				border-color: #35cee9 !important;
+				color: #35cee9 !important;
 				background: transparent !important;
 			}
 
@@ -109,45 +109,43 @@
 				line-height: 2.8em !important;
 			}
 
-			/* ============================================
-			   紫色板块 (#one-b) 修复
-			   ============================================ */
 			#one-b .content {
 				width: 50% !important;
 				border-left-color: #a55eea !important;
 			}
 			
 			#one-b .stat-box h2 {
-				color: #1cb495 !important;
+				color: #a2b41c !important;
 				text-shadow: 0 0 15px rgba(165, 94, 234, 0.4) !important;
 			}
 
-			/* ============================================
-			   青色板块 (#two-b) 修复
-			   ============================================ */
 			#two-b .content {
-				border-top-color: #00cec9 !important;
+				border-top-color: #35cee9 !important;
 				border-left: none !important;
 				transition: transform 1.2s ease-in-out, opacity 1.2s ease-in-out;
 			}
 			
 			#two-b .stat-box h2 {
-				color: #1cb495 !important;
+				color: #a2b41c !important;
 				text-shadow: 0 0 15px rgba(0, 206, 201, 0.4) !important;
 			}
 
-			/* 青色板块从下往上升入场动画 */
-			#two-b.inactive .content {
-				transform: translateY(100vh) !important;
-				opacity: 0;
+			#one-b.spotlight.style2 .content {
+				border-right-color: #a55eea !important; /* 强制改紫色 */
+				border-left: none !important;           /* 确保左边没线 */
+				width: 50% !important;                  /* 保持 50% 占比 */
 			}
 
-			/* 移动端适配：980px以下宽度恢复为100% */
-			@media screen and (max-width: 980px) {
-				#one-b .content,
-				#two-b .content {
-					width: 100% !important;
-				}
+			/* 2. 彻底解决青色页 (#two-b) 颜色问题 */
+			/* 青色页复刻粉色页 style1 bottom，分界线是内容块顶部的横线 */
+			#two-b.spotlight.style1 .content {
+				border-top-color: #35cee9 !important;   /* 强制改青色 */
+				width: 100% !important;                 /* 复刻粉色页的全屏宽度 */
+			}
+
+			/* 3. 修正计数器颜色 (防止变紫色) */
+			.stat-box h2 {
+				color: #a2b41c !important; /* 统一回标准绿 */
 			}
 		</style>
 
@@ -176,7 +174,7 @@
 						<header>
 							<h2>DonaTrust Portal</h2>
 							<p>
-								<span id="hi-name" style="font-weight: bold; color: #1cb495;">Hi, visitor.</span><br />
+								<span id="hi-name" style="font-weight: bold; color: #a2b41c;">Hi, visitor.</span><br />
 								Bridging the silence with technology.<br />
 								Blockchain transparency meets AI-powered sign language translation.
 							</p>
@@ -279,32 +277,32 @@
 				</section>
 
 			<!-- Two-B: Blockchain Animation (Cyan) - Pull down animation -->
-			<section id="two-b" class="spotlight style1 top">
-				<div class="content">
-					<div class="container">
-						<div class="row aln-middle">
-							<div class="col-7 col-12-medium">
-								<header>
-									<h2 style="color: #00cec9;">Visualizing the Chain</h2>
-									<p>Transparency from the Cloud to the Ledger</p>
-								</header>
-								<p>How do we guarantee your donation reaches its destination? Our interactive animation visualizes the Solana node verification process. See how data packets are hashed and secured in real-time, creating an unbreakable bond of trust.</p>
-								<ul class="actions">
-									<li><a href="#" class="button primary btn-cyan">View Animation</a></li>
-								</ul>
-							</div>
-							<div class="col-5 col-12-medium align-center stat-divider">
-								<div class="stat-box">
-									<h2><span class="counter" data-target="400">0</span>ms</h2>
-									<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Block Finality</p>
+				<section id="two-b" class="spotlight style1 bottom">
+					<span class="image fit main"><img src="images/pic06.jpg" alt="Solana Tech" /></span>
+					<div class="content">
+						<div class="container">
+							<div class="row aln-middle">
+								<div class="col-7 col-12-medium">
+									<header>
+										<h2 style="color: #35cee9;">Visualizing the Chain</h2>
+										<p>Transparency from Cloud to Ledger</p>
+									</header>
+									<p>How do we guarantee your donation reaches its destination? Our interactive animation visualizes the Solana node verification process. See how data packets are hashed and secured in real-time, creating an unbreakable bond of trust.</p>
+									<ul class="actions">
+										<li><a href="#" class="button primary external-link btn-cyan">View Animation</a></li>
+									</ul>
+								</div>
+								<div class="col-5 col-12-medium align-center stat-divider">
+									<div class="stat-box">
+										<h2><span class="counter" data-target="400">0</span>ms</h2>
+										<p style="text-transform: uppercase; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.6;">Block Finality</p>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<span class="image fit main bottom"><img src="images/pic06.jpg" alt="Solana Tech" /></span>
-				<a href="#three" class="goto-next scrolly">Next</a>
-			</section>
+					<a href="#three" class="goto-next scrolly">Next</a>
+				</section>
 
 			<!-- Three: Inspiration (Final Concept) -->
 				<section id="three" class="spotlight style3 left">
