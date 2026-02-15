@@ -33,14 +33,14 @@ By leveraging blockchain technology, we ensure every drop of kindness is transpa
 ---
 
 ## 👥 The Team: JSZ-Research
-A collaborative research group dedicated to social impact through technology.
+A collaborative research group dedicated to deploying cutting-edge technology for global social impact.
 
 | Member | Focus & Expertise | Connectivity |
 | :--- | :--- | :--- |
-| **Aaron (Jiamu) Shangguan** | **Digital Experience Architect**<br>Interactive Interface & Web Framework Design | [LinkedIn](https://www.linkedin.com/in/jiamu-shangguan-464092399/) · [GitHub](https://github.com/mu142857) |
-| **Linxi Fan** | **Distributed Ledger Specialist**<br>Blockchain Integration & Backend Logic | [LinkedIn](https://www.linkedin.com/in/linxi-fan/) · [GitHub](https://github.com/linxifan) |
-| **Junkai Zhao** | **System Integrity Strategist**<br>Core Backend Engineering & Data Security | [LinkedIn](https://www.linkedin.com/in/junkai-zhao-941592396/) · [GitHub](https://github.com/anoyume91) |
-| **Kaius (Kaixuan) Jin** | **Global Infrastructure Architect**<br>Systems Visionary & Scalability Research | [LinkedIn](https://www.linkedin.com/in/kaixuan-jin/) · [GitHub](https://github.com/KaiusJin) |
+| <img src="https://github.com/mu142857.png" width="80px;"/><br>**Aaron Shangguan** | **Creative Lead & Front-end Architect**<br>Interactive Experience & Visual Frameworks | [LinkedIn](https://www.linkedin.com/in/jiamu-shangguan-464092399/) · [GitHub](https://github.com/mu142857) |
+| <img src="https://github.com/linxifan.png" width="80px;"/><br>**Linxi Fan** | **Blockchain Engineer & Technical Narrator**<br>Distributed Ledgers & Protocol Architecture | [LinkedIn](https://www.linkedin.com/in/linxi-fan/) · [GitHub](https://github.com/linxifan) |
+| <img src="https://github.com/anoyume91.png" width="80px;"/><br>**Junkai Zhao** | **Backend Systems & 3D Technical Artist**<br>Data Integrity & 3D Technical Visualization | [LinkedIn](https://www.linkedin.com/in/junkai-zhao-941592396/) · [GitHub](https://github.com/anoyume91) |
+| <img src="https://github.com/KaiusJin.png" width="80px;"/><br>**Kaius Jin** | **Full-stack Developer & NLP Systems Lead**<br>Video Translation & AI Language Systems | [LinkedIn](https://www.linkedin.com/in/kaixuan-jin/) · [GitHub](https://github.com/KaiusJin) |
 
 ---
 
