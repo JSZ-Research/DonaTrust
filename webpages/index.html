@@ -147,6 +147,25 @@
 			.stat-box h2 {
 				color: #a2b41c !important; /* 统一回标准绿 */
 			}
+
+			/* 4. 让 stat-divider 竖线撑满整列高度 */
+			.spotlight .row.aln-middle {
+				align-items: stretch !important;
+			}
+			.stat-divider {
+				display: flex !important;
+				flex-direction: column !important;
+				justify-content: center !important;
+			}
+
+			/* 5. 平板 & 手机：取消强制 50% 宽度 */
+			@media screen and (max-width: 980px) {
+				#two.spotlight.right .content,
+				#one-b .content,
+				#one-b.spotlight.style2 .content {
+					width: 100% !important;
+				}
+			}
 		</style>
 
 	</head>
