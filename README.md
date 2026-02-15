@@ -42,10 +42,10 @@ A collaborative research group dedicated to deploying cutting-edge technology fo
 
 | Member | Focus & Expertise | Connectivity |
 | :--- | :--- | :--- |
-| <img src="https://github.com/mu142857.png" width="80px;"/><br>**Aaron Shangguan** | **Creative Lead & Front-end Architect**<br>Interactive Experience & Visual Frameworks | [LinkedIn](https://www.linkedin.com/in/jiamu-shangguan-464092399/) · [GitHub](https://github.com/mu142857) |
-| <img src="https://github.com/linxifan.png" width="80px;"/><br>**Linxi Fan** | **Blockchain Engineer & Technical Narrator**<br>Distributed Ledgers & Protocol Architecture | [LinkedIn](https://www.linkedin.com/in/linxi-fan/) · [GitHub](https://github.com/linxifan) |
-| <img src="https://github.com/anoyume91.png" width="80px;"/><br>**Junkai Zhao** | **Backend Systems & 3D Technical Artist**<br>Data Integrity & 3D Technical Visualization | [LinkedIn](https://www.linkedin.com/in/junkai-zhao-941592396/) · [GitHub](https://github.com/anoyume91) |
-| <img src="https://github.com/KaiusJin.png" width="80px;"/><br>**Kaius Jin** | **Full-stack Developer & NLP Systems Lead**<br>Video Translation & AI Language Systems | [LinkedIn](https://www.linkedin.com/in/kaixuan-jin/) · [GitHub](https://github.com/KaiusJin) |
+| <img src="https://github.com/mu142857.png" width="80px;"/><br>**Aaron Shangguan** | **Front-end Architect & System Integrator**<br>Interactive Experience & Full-system Portal Integration | [LinkedIn](https://www.linkedin.com/in/jiamu-shangguan-464092399/) · [GitHub](https://github.com/mu142857) |
+| <img src="https://github.com/KaiusJin.png" width="80px;"/><br>**Kaius Jin** | **Back-end Engineer & NLP Systems Specialist**<br>AI Video Translation Engine & Multilingual Frameworks | [LinkedIn](https://www.linkedin.com/in/kaixuan-jin/) · [GitHub](https://github.com/KaiusJin) |
+| <img src="https://github.com/anoyume91.png" width="80px;"/><br>**Junkai Zhao** | **Back-end Engineer & Technical Artist**<br>3D Tech Visualization & System Transmission Protocols | [LinkedIn](https://www.linkedin.com/in/junkai-zhao-941592396/) · [GitHub](https://github.com/anoyume91) |
+| <img src="images/rana_linxi.png" width="80px;"/><br>**Linxi Fan** | **Back-end Engineer & Technical Narrator**<br>Blockchain Transaction Logic & Project Storytelling | [LinkedIn](https://www.linkedin.com/in/linxi-fan/) · [GitHub](https://github.com/linxifan) |
 
 ---
 
