@@ -29,14 +29,6 @@ By leveraging blockchain technology, we ensure every drop of kindness is transpa
 
 ---
 
-## 🛠️ Technology Stack
-- **Frontend:** HTML5 / CSS3 (Eventually Template by HTML5 UP)
-- **Blockchain:** Decentralized Ledger Technology (DLT)
-- **AI/Translation:** Sign Language to Text Translation Engine
-- **Hosting:** GitHub Pages
-
----
-
 ## 👥 The Team: JSZ-Research
 A collaborative research group dedicated to deploying cutting-edge technology for global social impact.
 
@@ -49,10 +41,10 @@ A collaborative research group dedicated to deploying cutting-edge technology fo
 
 ---
 
-## 🚀 Getting Started
-1. **Visit the Platform:** [DonaTrust Live](https://jsz-research.github.io/DonaTrust/)
-2. **Local Development:**
-   ```bash
-   git clone https://github.com/JSZ-Research/DonaTrust.git
-   cd DonaTrust
-   # Open index.html in your favorite browser
+## 🛠️ Technology Stack
+- **Frontend:** HTML5 / CSS3 (Eventually Template by HTML5 UP)
+- **Blockchain:** Decentralized Ledger Technology (DLT)
+- **AI/Translation:** Sign Language to Text Translation Engine
+- **Hosting:** GitHub Pages
+
+---
