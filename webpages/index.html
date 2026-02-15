@@ -131,24 +131,20 @@
 			}
 
 			#one-b.spotlight.style2 .content {
-				border-right-color: #a55eea !important; /* 强制改紫色 */
-				border-left: none !important;           /* 确保左边没线 */
-				width: 50% !important;                  /* 保持 50% 占比 */
+				border-right-color: #a55eea !important; 
+				border-left: none !important;
+				width: 50% !important;
 			}
 
-			/* 2. 彻底解决青色页 (#two-b) 颜色问题 */
-			/* 青色页复刻粉色页 style1 bottom，分界线是内容块顶部的横线 */
 			#two-b.spotlight.style1 .content {
-				border-top-color: #35cee9 !important;   /* 强制改青色 */
-				width: 100% !important;                 /* 复刻粉色页的全屏宽度 */
+				border-top-color: #35cee9 !important;
+				width: 100% !important;
 			}
 
-			/* 3. 修正计数器颜色 (防止变紫色) */
 			.stat-box h2 {
-				color: #a2b41c !important; /* 统一回标准绿 */
+				color: #a2b41c !important;
 			}
 
-			/* 4. 让 stat-divider 竖线撑满整列高度 */
 			.spotlight .row.aln-middle {
 				align-items: stretch !important;
 			}
@@ -158,7 +154,6 @@
 				justify-content: center !important;
 			}
 
-			/* 5. 平板 & 手机：取消强制 50% 宽度 */
 			@media screen and (max-width: 980px) {
 				#two.spotlight.right .content,
 				#one-b .content,
@@ -179,9 +174,9 @@
 						<ul>
 							<li><a href="../index.html">Home</a></li>
 							<li><a href="../tranlator/templates/index.html" class="button primary external-link">Scanner</a></li>
-							<li><a href="#" class="button primary external-link btn-purple">Video Translate</a></li>
+							<li><a href="../video_voice_trans/templates/index.html" class="button primary external-link btn-purple">Video Translate</a></li>
 							<li><a href="./flowchart.html" class="button primary external-link btn-blue">Live Ledger</a></li>
-							<li><a href="#" class="button primary external-link btn-cyan">How it Works</a></li>
+							<li><a href="./blockchain.html" class="button primary external-link btn-cyan">How it Works</a></li>
 							<li><a href="./ledger.html" class="button primary external-link btn-green">Ledger</a></li>
 						</ul>
 					</nav>
