@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # --- 配置 ---
 # 使用 .strip() 防止复制时带入不可见的空格或换行
-ELEVENLABS_KEY = "sk_f4b5b8896e27b6adae2639f527d327243f89e24e58f3c968".strip()
+ELEVENLABS_KEY = "".strip()
 client = ElevenLabs(api_key=ELEVENLABS_KEY)
 
 # 预加载模型（建议在全局加载，避免每次上传都重新下载）
