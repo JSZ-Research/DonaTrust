@@ -5,7 +5,7 @@ import os
 
 # --- 1. Configuration (Using Rachel's Voice) ---
 # Note: Keep your API Key secure. Consider using environment variables for production.
-ELEVENLABS_API_KEY = "sk_f4b5b8896e27b6adae2639f527d327243f89e24e58f3c968"
+ELEVENLABS_API_KEY = ""
 client = ElevenLabs(api_key=ELEVENLABS_API_KEY.strip()) 
 
 # Rachel is a pre-set voice available in the free tier
