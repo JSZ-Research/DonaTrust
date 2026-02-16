@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 # --- 1. 配置 ---
-ELEVENLABS_KEY = "sk_f4b5b8896e27b6adae2639f527d327243f89e24e58f3c968"
+ELEVENLABS_KEY = ""
 client = ElevenLabs(api_key=ELEVENLABS_KEY.strip())
 VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
 
